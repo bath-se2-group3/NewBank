@@ -25,3 +25,7 @@ hs_err_pid*
 # Eclipse stuff
 .classpath
 .project
+
+# Bash wrappers for building and booting
+bootup.sh
+build.sh
