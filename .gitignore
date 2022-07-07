@@ -29,3 +29,10 @@ hs_err_pid*
 # Bash wrappers for building and booting
 bootup.sh
 build.sh
+
+.DS_Store
+.idea/
+NewBank.iml
+newbank/.DS_Store
+newbank/.idea/
+newbank/out/
