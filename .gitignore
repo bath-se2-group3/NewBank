@@ -32,7 +32,6 @@ build.sh
 
 .DS_Store
 .idea/
-NewBank.iml
 newbank/.DS_Store
 newbank/.idea/
 newbank/out/
