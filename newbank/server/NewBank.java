@@ -105,7 +105,7 @@ public class NewBank {
 		if(customers.containsKey(customer.getUserName())){
 			return "SUCCESS - customer account added";
 		}else{
-			return "FAILURED - customer account NOT added";
+			return "FAILURE - customer account NOT added";
 		}
 	}
 

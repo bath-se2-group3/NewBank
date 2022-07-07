@@ -94,10 +94,10 @@ public class NewBankClientHandler extends Thread{
 	}
 
 	private Customer getCustomerDetails(String request) throws IOException {
-			out.println("Please submit customer details");
-			out.println("<FirstName> <Surname> <Username>");
+			out.println("Please submit customer details like so:");
+			out.println("CREATECUSTOMER <FirstName> <Surname> <Username>");
 			String[] response = in.readLine().split("\\s+");
-			return new Customer.CustomerBuilder(response[0], response[1], response[2])
+			return new Customer.CustomerBuilder(response[1], response[2], response[3])
 					.build();
 	}
 
