@@ -23,14 +23,18 @@ public class NewBankClientHandler extends Thread{
 	public void run() {
 		// keep getting requests from the client and processing them
 		try {
-			out.println("Welcome to NewBank");
-			out.println("Are you an existing customer?");
-			out.println("Yes or No");
-			String existingCustomer = in.readLine().toLowerCase(Locale.ROOT);
-			if(existingCustomer.equals("yes")){
-				existingCustomer();
-			}else{
-				newCustomer();
+			while(true) {
+				out.println("Welcome to NewBank");
+				out.println("Are you an existing customer?");
+				out.println("Yes or No");
+				String existingCustomer = in.readLine().toLowerCase(Locale.ROOT);
+				if (existingCustomer.equals("yes")) {
+					existingCustomer();
+				} else if (existingCustomer.equals("no")) {
+					newCustomer();
+				} else {
+					out.printf("Sorry, that input %s is not recognised%n", existingCustomer);
+				}
 			}
 
 		} catch (IOException e) {
@@ -50,10 +54,10 @@ public class NewBankClientHandler extends Thread{
 	private void existingCustomer() throws IOException {
 		// ask for user name
 		out.println("Enter Username");
-		String userName = in.readLine();
+		String userName = in.readLine().toLowerCase(Locale.ROOT);
 		// ask for password
 		out.println("Enter Password");
-		String password = in.readLine();
+		String password = in.readLine().toLowerCase(Locale.ROOT);
 		out.println("Checking Details...");
 		// authenticate user and get customer ID token from bank for use in subsequent requests
 		CustomerID customer = bank.checkLogInDetails(userName, password);
@@ -64,7 +68,7 @@ public class NewBankClientHandler extends Thread{
 					+ "Type HELP to list available commands"
 					+ "\n");
 			while(true) {
-				String request = in.readLine();
+				String request = in.readLine().toLowerCase(Locale.ROOT);
 				System.out.println("Request from " + customer.getKey());
 				String response = bank.processRequest(customer, request);
 				out.println(response);
@@ -96,9 +100,33 @@ public class NewBankClientHandler extends Thread{
 	private Customer getCustomerDetails(String request) throws IOException {
 			out.println("Please submit customer details like so:");
 			out.println("CREATECUSTOMER <FirstName> <Surname> <Username>");
-			String[] response = in.readLine().split("\\s+");
-			return new Customer.CustomerBuilder(response[1], response[2], response[3])
-					.build();
+			while(true){
+				String[] response = in.readLine().split("\\s+");
+				if(response.length == 4 && response[0].toLowerCase(Locale.ROOT).equals("createcustomer")){
+
+
+					if( response[1].length() > 0 &&
+						response[2].length() > 0 &&
+						response[3].length() > 0
+					){
+						if(bank.getCustomers().containsKey(response[3])){
+							out.printf("Sorry, that username already exists%n");
+						}else{
+							return new Customer.CustomerBuilder(response[1], response[2], response[3])
+									.build();
+						}
+					}else{
+						out.printf("Sorry, we cannot accept that input%n");
+					}
+
+				}else if(response[0].toLowerCase(Locale.ROOT).equals("exit")){
+					return null;
+				}else{
+					out.printf("Sorry, we cannot accept that input%n");
+				}
+
+			}
+
 	}
 
 }
