@@ -51,7 +51,7 @@ public class NewBank {
 					return showMyAccounts(customer);
 				case "help":
 					return showHelp();
-				case  "PAY": 
+				case  "PAY":
 					return payMoney(customer, request);
 				default:
 					return "FAIL";
@@ -116,8 +116,9 @@ public class NewBank {
 		return help;
 	}
 
-	public HashMap<String, Customer> getCustomers(){
+	public HashMap<String, Customer> getCustomers() {
 		return customers;
+	}
 
 	private String payMoney(CustomerID customer, String request) {
 
