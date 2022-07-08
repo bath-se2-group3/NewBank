@@ -41,12 +41,15 @@ public class NewBank {
 
 	// commands from the NewBank customer are processed in this method
 	public synchronized String processRequest(CustomerID customer, String request) {
+		String command = request.split( "\\s+" )[0];
 		if (customers.containsKey(customer.getKey())) {
-			switch (request) {
+			switch (command) {
 				case "SHOWMYACCOUNTS":
 					return showMyAccounts(customer);
 				case "HELP":
 					return showHelp();
+				case  "PAY": 
+					return payMoney(customer, request);
 				default:
 					return "FAIL";
 			}
@@ -77,11 +80,43 @@ public class NewBank {
 
 		+ "\n"
 
-		+ "PAY <Person/Company> <Ammount>\n"
+		+ "PAY <Person/Company> <Account_name> <Sotrt_code> <Ammount>\n"
 		+ "├ Pay another user from your account to their account\n"
-		+ "└ e.g. PAY John 100\n";
+		+ "└ e.g. PAY Bhagy Main EC12345 1500\n";
 		return help;
 	
 	}
+
+	private String payMoney(CustomerID customer, String request) {
+
+		String [] arguments = request.split( "\\s+" );
+
+		if (arguments.length==5){
+			String command = arguments[0];
+			String person = arguments[1];
+			String account= arguments[2];
+			String code = arguments[3];
+			String amount = arguments[4];
+			double amountNumber = Double.parseDouble(amount);
+
+
+
+			if (customers.containsKey(person)){
+				if(amountNumber <= Double.parseDouble(showMyAccounts(customer).split( "\\s+" )[1])){
+					return amountNumber+ " have been transferred from "+ customer.getKey() + " to "+ person;
+				}
+				else{
+					return "insufficient funds, Please retry.";
+				}
+			}
+			else {
+				return "Bad request. The requested person is not a customer of NewBank.";
+			}
+		}
+		else {
+			return "Bad request. Please enter your command in the following format: PAY <Person/Company> <Account> <Sort Code> <Amount> ";
+		}
+	}
+
 }
 	
