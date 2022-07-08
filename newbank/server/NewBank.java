@@ -51,7 +51,7 @@ public class NewBank {
 					return showMyAccounts(customer);
 				case "help":
 					return showHelp();
-				case  "PAY":
+				case  "pay":
 					return payMoney(customer, request);
 				default:
 					return "FAIL";
