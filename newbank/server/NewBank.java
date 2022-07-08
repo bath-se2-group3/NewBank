@@ -1,5 +1,6 @@
 package newbank.server;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -43,13 +44,11 @@ public class NewBank {
 
 	// commands from the NewBank customer are processed in this method
 	public synchronized String processRequest(CustomerID customer, String request) {
-		System.out.println("here2");
-
 		if (customers.containsKey(customer.getKey())) {
-			switch (request) {
-				case "SHOWMYACCOUNTS":
+			switch (request.toLowerCase(Locale.ROOT)) {
+				case "showmyaccounts":
 					return showMyAccounts(customer);
-				case "HELP":
+				case "help":
 					return showHelp();
 				default:
 					return "FAIL";
@@ -59,7 +58,6 @@ public class NewBank {
 	}
 
 	public synchronized String processRequest(Customer customer, String request) {
-		System.out.println("processRequest");
 			switch (request.toLowerCase(Locale.ROOT)) {
 				case "createcustomer":
 					return createCustomer(customer);
@@ -103,18 +101,20 @@ public class NewBank {
 	private String createCustomer(Customer customer){
 		customers.put(customer.getUserName(), customer);
 		if(customers.containsKey(customer.getUserName())){
-			return "SUCCESS - customer account added";
+			return "A customer account was created for "+customer.getUserName();
 		}else{
-			return "FAILURE - customer account NOT added";
+			return "No customer account was created";
 		}
 	}
 
-
 	private String showNewCustomerHelp() {
 		String help = "\nCREATECUSTOMER\n"
-				+ "├ Create a new customer account\n"
-				+ "└ e.g. CreateCustomer: FirstName Surname Username\n";
+				+ "├ Create a new customer account\n";
 		return help;
-
 	}
+
+	public HashMap<String, Customer> getCustomers(){
+		return customers;
+	}
+
 }
