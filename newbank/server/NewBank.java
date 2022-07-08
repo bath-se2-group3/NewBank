@@ -1,8 +1,8 @@
 package newbank.server;
 
+import java.io.IOException;
 import java.util.HashMap;
-import java.util.Scanner;
-import java.io.File;
+import java.util.Locale;
 
 public class NewBank {
 
@@ -15,17 +15,20 @@ public class NewBank {
 	}
 
 	private void addTestData() {
-		Customer bhagy = new Customer();
-		bhagy.addAccount(new Account("Main", 1000.0));
-		customers.put("Bhagy", bhagy);
+		Customer bhagy = new Customer.CustomerBuilder("Sam", "Bhagy", "bhagy")
+				.addAccounts(new Account("Main", 1000.0))
+				.build();
+		customers.put("bhagy", bhagy);
 
-		Customer christina = new Customer();
-		christina.addAccount(new Account("Savings", 1500.0));
-		customers.put("Christina", christina);
+		Customer christina = new Customer.CustomerBuilder("Christina", "Marks", "Christina")
+				.addAccounts(new Account("Savings", 1500.0))
+				.build();
+		customers.put("christina", christina);
 
-		Customer john = new Customer();
-		john.addAccount(new Account("Checking", 250.0));
-		customers.put("John", john);
+		Customer john = new Customer.CustomerBuilder("John", "Tees", "John")
+				.addAccounts(new Account("Checking", 250.00))
+				.build();
+		customers.put("john", john);
 	}
 
 	public static NewBank getBank() {
@@ -43,18 +46,29 @@ public class NewBank {
 	public synchronized String processRequest(CustomerID customer, String request) {
 		String command = request.split( "\\s+" )[0];
 		if (customers.containsKey(customer.getKey())) {
-			switch (command) {
-				case "SHOWMYACCOUNTS":
+			switch (request.toLowerCase(Locale.ROOT)) {
+				case "showmyaccounts":
 					return showMyAccounts(customer);
-				case "HELP":
+				case "help":
 					return showHelp();
-				case  "PAY": 
+				case  "pay":
 					return payMoney(customer, request);
 				default:
 					return "FAIL";
 			}
 		}
 		return "FAIL";
+	}
+
+	public synchronized String processRequest(Customer customer, String request) {
+			switch (request.toLowerCase(Locale.ROOT)) {
+				case "createcustomer":
+					return createCustomer(customer);
+				case "help":
+					return showNewCustomerHelp();
+				default:
+					return "FAIL";
+			}
 	}
 
 	private String showMyAccounts(CustomerID customer) {
@@ -84,7 +98,26 @@ public class NewBank {
 		+ "├ Pay another user from your account to their account\n"
 		+ "└ e.g. PAY Bhagy Main EC12345 1500\n";
 		return help;
-	
+
+	}
+
+	private String createCustomer(Customer customer){
+		customers.put(customer.getUserName(), customer);
+		if(customers.containsKey(customer.getUserName())){
+			return "A customer account was created for "+customer.getUserName();
+		}else{
+			return "No customer account was created";
+		}
+	}
+
+	private String showNewCustomerHelp() {
+		String help = "\nCREATECUSTOMER\n"
+				+ "├ Create a new customer account\n";
+		return help;
+	}
+
+	public HashMap<String, Customer> getCustomers() {
+		return customers;
 	}
 
 	private String payMoney(CustomerID customer, String request) {
@@ -119,4 +152,3 @@ public class NewBank {
 	}
 
 }
-	
