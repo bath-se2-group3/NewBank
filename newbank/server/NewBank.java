@@ -80,9 +80,9 @@ public class NewBank {
 
 		+ "\n"
 
-		+ "PAY <Person/Company> <Ammount>\n"
+		+ "PAY <Person/Company> <Account_name> <Sotrt_code> <Ammount>\n"
 		+ "├ Pay another user from your account to their account\n"
-		+ "└ e.g. PAY John 100\n";
+		+ "└ e.g. PAY Bhagy Main EC12345 1500\n";
 		return help;
 	
 	}
@@ -102,7 +102,7 @@ public class NewBank {
 
 
 			if (customers.containsKey(person)){
-				if(amountNumber < Double.parseDouble(showMyAccounts(customer).split( "\\s+" )[1])){
+				if(amountNumber <= Double.parseDouble(showMyAccounts(customer).split( "\\s+" )[1])){
 					return amountNumber+ " have been transferred from "+ customer.getKey() + " to "+ person;
 				}
 				else{
@@ -116,5 +116,7 @@ public class NewBank {
 		else {
 			return "Bad request. Please enter your command in the following format: PAY <Person/Company> <Account> <Sort Code> <Amount> ";
 		}
+	}
+
 }
 	
