@@ -54,6 +54,24 @@ public class Customer {
 		return lastName;
 	}
 
+	public Account getAccount(String name){
+		for(Account a : accounts) {
+			if (name == a.accountName){
+				return a;
+			}
+		}
+		return null;
+	}
+
+	public Account getAccountByIndex(int index){
+		for(int i =0; i<accounts.length; i++) {
+			if (i == index){
+				return accounts.get(i);
+			}
+		}
+		return null;
+	}
+
 	public String accountsToString() {
 		String s = "";
 		for(Account a : accounts) {

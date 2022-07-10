@@ -135,7 +135,9 @@ public class NewBank {
 
 
 			if (customers.containsKey(person)){
-				if(amountNumber <= Double.parseDouble(showMyAccounts(customer).split( "\\s+" )[1])){
+				if(amountNumber <= customer.getAccountByIndex(0)){
+					customers.containsKey(person).getAccount(account).addToBalance(amountNumber);
+					customer.getAccountByIndex(0).deductFromBalance(amountNumber);
 					return amountNumber+ " have been transferred from "+ customer.getKey() + " to "+ person;
 				}
 				else{
