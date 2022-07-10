@@ -46,7 +46,7 @@ public class NewBank {
 	public synchronized String processRequest(CustomerID customer, String request) {
 		String command = request.split( "\\s+" )[0];
 		if (customers.containsKey(customer.getKey())) {
-			switch (request.toLowerCase(Locale.ROOT)) {
+			switch (command) {
 				case "showmyaccounts":
 					return showMyAccounts(customer);
 				case "help":
