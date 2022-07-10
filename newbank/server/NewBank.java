@@ -46,15 +46,13 @@ public class NewBank {
 	public synchronized String processRequest(CustomerID customer, String request) {
 		String command = request.split( "\\s+" )[0];
 		if (customers.containsKey(customer.getKey())) {
-			switch (command) {
+			switch (request.toLowerCase(Locale.ROOT)) {
 				case "showmyaccounts":
 					return showMyAccounts(customer);
 				case "help":
 					return showHelp();
 				case  "pay":
 					return payMoney(customer, request);
-				case  "move":
-					return moveMoney(customer, request);
 				default:
 					return "FAIL";
 			}
@@ -90,9 +88,9 @@ public class NewBank {
 
 		+ "\n"
 
-		+ "MOVE <accountFrom> <accountTo> <amount>\n"
+		+ "MOVE <Amount> <From> <To>\n"
 		+ "├ Moves money between a users existing accounts\n"
-		+ "└ e.g. MOVE Main Savings 100\n"
+		+ "└ e.g. MOVE 100 Main Savings\n"
 
 		+ "\n"
 
@@ -150,38 +148,6 @@ public class NewBank {
 		}
 		else {
 			return "Bad request. Please enter your command in the following format: PAY <Person/Company> <Account> <Sort Code> <Amount> ";
-		}
-	}
-
-	private String moveMoney(CustomerID customer, String request) {
-
-		String [] arguments = request.split( "\\s+" );
-
-		if (arguments.length==4){
-			String command = arguments[0];
-			String accountFrom = arguments[1];
-			String accountTo = arguments[2];
-			String amount = arguments[3];
-			double amountNumber = Double.parseDouble(amount);
-
-
-
-			if (customers.containsKey(accountFrom)){
-				if(amountNumber <= Double.parseDouble(showMyAccounts(customer).split( "\\s+" )[1])){
-
-					return amountNumber+ " has been transferred from '" + accountFrom + "' to '" + accountTo + "'.";
-				}
-				else{
-					return "Invalid request. There are insufficient funds in '" + accountFrom + "'. Please retry.";
-				}
-			}
-			else {
-				return "Invalid request. You do not have a registered account with the name '" + accountFrom + "'. Please retry.";
-			}
-		}
-		// Currently, input format is actually more like MOVE <Person> <Account To> <Amount>
-		else {
-			return "Invalid request. Please enter your command in the following format: MOVE <Account From> <Account To> <Amount>.";
 		}
 	}
 
