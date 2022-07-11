@@ -13,7 +13,7 @@ public class Account {
 	}
 	
 	public String toString() {
-		return (accountName + ": " + openingBalance);
+		return (accountName + ": " + balance);
 	}
 
 	public double showBalance() {
@@ -21,11 +21,17 @@ public class Account {
 	}
 
 	public double addToBalance(double amount) {
-		return balance+amount;
+		balance = balance + amount;
+		return balance;
 	}
 
 	public double deductFromBalance(double amount) {
-		return balance-amount;
+		balance = balance - amount;
+		return balance;
+	}
+	
+	public String getAcountName() {
+		return accountName;
 	}
 
 }

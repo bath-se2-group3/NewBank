@@ -56,7 +56,7 @@ public class Customer {
 
 	public Account getAccount(String name){
 		for(Account a : accounts) {
-			if (name == a.accountName){
+			if (name.equals(a.getAcountName())){
 				return a;
 			}
 		}
@@ -64,7 +64,7 @@ public class Customer {
 	}
 
 	public Account getAccountByIndex(int index){
-		for(int i =0; i<accounts.length; i++) {
+		for(int i =0; i<accounts.size(); i++) {
 			if (i == index){
 				return accounts.get(i);
 			}

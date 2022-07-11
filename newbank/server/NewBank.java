@@ -16,17 +16,17 @@ public class NewBank {
 
 	private void addTestData() {
 		Customer bhagy = new Customer.CustomerBuilder("Sam", "Bhagy", "bhagy")
-				.addAccounts(new Account("Main", 1000.0))
+				.addAccounts(new Account("main", 1000.0))
 				.build();
 		customers.put("bhagy", bhagy);
 
-		Customer christina = new Customer.CustomerBuilder("Christina", "Marks", "Christina")
-				.addAccounts(new Account("Savings", 1500.0))
+		Customer christina = new Customer.CustomerBuilder("Christina", "Marks", "christina")
+				.addAccounts(new Account("savings", 1500.0))
 				.build();
 		customers.put("christina", christina);
 
-		Customer john = new Customer.CustomerBuilder("John", "Tees", "John")
-				.addAccounts(new Account("Checking", 250.00))
+		Customer john = new Customer.CustomerBuilder("John", "Tees", "john")
+				.addAccounts(new Account("checking", 250.00))
 				.build();
 		customers.put("john", john);
 	}
@@ -46,7 +46,7 @@ public class NewBank {
 	public synchronized String processRequest(CustomerID customer, String request) {
 		String command = request.split( "\\s+" )[0];
 		if (customers.containsKey(customer.getKey())) {
-			switch (request.toLowerCase(Locale.ROOT)) {
+			switch (command.toLowerCase(Locale.ROOT)) {
 				case "showmyaccounts":
 					return showMyAccounts(customer);
 				case "help":
@@ -77,26 +77,26 @@ public class NewBank {
 
 	private String showHelp() {
 		String help = "\nSHOWMYACCOUNTS\n"
-		+ "├ Returns a list of all the customers accounts along with their current balance\n"
-		+ "└ e.g. Main: 1000.0\n"
+		+ "â”œ Returns a list of all the customers accounts along with their current balance\n"
+		+ "â”” e.g. Main: 1000.0\n"
 
 		+ "\n"
 
 		+ "NEWACCOUNT <Name>\n"
-		+ "├ Creates a new account\n"
-		+ "└ e.g. NEWACCOUNT Savings\n"
+		+ "â”œ Creates a new account\n"
+		+ "â”” e.g. NEWACCOUNT Savings\n"
 
 		+ "\n"
 
 		+ "MOVE <Amount> <From> <To>\n"
-		+ "├ Moves money between a users existing accounts\n"
-		+ "└ e.g. MOVE 100 Main Savings\n"
+		+ "â”œ Moves money between a users existing accounts\n"
+		+ "â”” e.g. MOVE 100 Main Savings\n"
 
 		+ "\n"
 
 		+ "PAY <Person/Company> <Account_name> <Sotrt_code> <Ammount>\n"
-		+ "├ Pay another user from your account to their account\n"
-		+ "└ e.g. PAY Bhagy Main EC12345 1500\n";
+		+ "â”œ Pay another user from your account to their account\n"
+		+ "â”” e.g. PAY Bhagy Main EC12345 1500\n";
 		return help;
 
 	}
@@ -112,7 +112,7 @@ public class NewBank {
 
 	private String showNewCustomerHelp() {
 		String help = "\nCREATECUSTOMER\n"
-				+ "├ Create a new customer account\n";
+				+ "â”œ Create a new customer account\n";
 		return help;
 	}
 
@@ -135,9 +135,9 @@ public class NewBank {
 
 
 			if (customers.containsKey(person)){
-				if(amountNumber <= customer.getAccountByIndex(0)){
-					customers.containsKey(person).getAccount(account).addToBalance(amountNumber);
-					customer.getAccountByIndex(0).deductFromBalance(amountNumber);
+				if(amountNumber <= customers.get(customer.getKey()).getAccountByIndex(0).showBalance()){
+					(customers.get(person)).getAccount(account).addToBalance(amountNumber);
+					(customers.get(customer.getKey())).getAccountByIndex(0).deductFromBalance(amountNumber);
 					return amountNumber+ " have been transferred from "+ customer.getKey() + " to "+ person;
 				}
 				else{
