@@ -167,15 +167,16 @@ public class NewBank {
 			double amountNumber = Double.parseDouble(amount);
 
 
-
-
-				if(amountNumber <= customers.get(customer.getKey()).getAccountByIndex(0).getAccountBalance()){
+				if(amountNumber <= 0){
+					return "Please enter a positive value.";
+				}
+				else if(amountNumber <= customers.get(customer.getKey()).getAccountByIndex(0).getAccountBalance()){
 					(customers.get(customer.getKey())).getAccountByIndex(1).addToBalance(amountNumber); //
 					(customers.get(customer.getKey())).getAccountByIndex(0).deductFromBalance(amountNumber);
-					return amountNumber+ " have been transferred from "+ accountFrom + " to "+ accountTo;
+					return String.format("%.2f",amountNumber)+ " has been transferred from "+ accountFrom + " to "+ accountTo;
 				}
 				else{
-					return "insufficient funds, Please retry.";
+					return "There are insufficient funds in" + accountFrom + ". Please try again.";
 				}
 		}
 		else {
