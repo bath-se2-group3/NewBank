@@ -16,7 +16,7 @@ public class Account {
 		return (accountName + ": " + balance);
 	}
 
-	public double showBalance() {
+	public double getBalance() {
 		return balance;
 	}
 

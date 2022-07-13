@@ -16,17 +16,17 @@ public class NewBank {
 
 	private void addTestData() {
 		Customer bhagy = new Customer.CustomerBuilder("Sam", "Bhagy", "bhagy")
-				.addAccounts(new Account("main", 1000.0))
+				.addAccounts(new Account("Main", 1000.0))
 				.build();
 		customers.put("bhagy", bhagy);
 
-		Customer christina = new Customer.CustomerBuilder("Christina", "Marks", "christina")
-				.addAccounts(new Account("savings", 1500.0))
+		Customer christina = new Customer.CustomerBuilder("Christina", "Marks", "Christina")
+				.addAccounts(new Account("Savings", 1500.0))
 				.build();
 		customers.put("christina", christina);
 
-		Customer john = new Customer.CustomerBuilder("John", "Tees", "john")
-				.addAccounts(new Account("checking", 250.00))
+		Customer john = new Customer.CustomerBuilder("John", "Tees", "John")
+				.addAccounts(new Account("Checking", 250.00))
 				.build();
 		customers.put("john", john);
 	}
@@ -94,9 +94,9 @@ public class NewBank {
 
 		+ "\n"
 
-		+ "PAY <Person/Company> <Account_name> <Sotrt_code> <Ammount>\n"
+		+ "PAY <Payee_Account_name> <Person/Company> <Receipient_Account_name> <Sotrt_code> <Ammount>\n"
 		+ "â”œ Pay another user from your account to their account\n"
-		+ "â”” e.g. PAY Bhagy Main EC12345 1500\n";
+		+ "â”” e.g. PAY Checking Bhagy Main EC12345 1500\n";
 		return help;
 
 	}
@@ -124,20 +124,23 @@ public class NewBank {
 
 		String [] arguments = request.split( "\\s+" );
 
-		if (arguments.length==5){
+		if (arguments.length==6){
 			String command = arguments[0];
-			String person = arguments[1];
-			String account= arguments[2];
-			String code = arguments[3];
-			String amount = arguments[4];
+			String payeeAcc = arguments[1];
+			String person = arguments[2];
+			String receipientAcc = arguments[3];
+			String code = arguments[4];
+			String amount = arguments[5];
+			
 			double amountNumber = Double.parseDouble(amount);
-
+			Account payeeAccount = customers.get(customer.getKey()).getAccount(payeeAcc);
+			Account receipientAccount = customers.get(person).getAccount(receipientAcc);
 
 
 			if (customers.containsKey(person)){
-				if(amountNumber <= customers.get(customer.getKey()).getAccountByIndex(0).showBalance()){
-					(customers.get(person)).getAccount(account).addToBalance(amountNumber);
-					(customers.get(customer.getKey())).getAccountByIndex(0).deductFromBalance(amountNumber);
+				if(amountNumber <= payeeAccount.getBalance()){
+					receipientAccount.addToBalance(amountNumber);
+					payeeAccount.deductFromBalance(amountNumber);
 					return amountNumber+ " have been transferred from "+ customer.getKey() + " to "+ person;
 				}
 				else{
