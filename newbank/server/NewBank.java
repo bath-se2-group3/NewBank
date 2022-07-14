@@ -94,7 +94,7 @@ public class NewBank {
 
 		+ "\n"
 
-		+ "PAY <Payee_Account_name> <Person/Company> <Receipient_Account_name> <Sotrt_code> <Ammount>\n"
+		+ "PAY <Payer_Account_name> <Person/Company> <Receipient_Account_name> <Sotrt_code> <Ammount>\n"
 		+ "â”œ Pay another user from your account to their account\n"
 		+ "â”” e.g. PAY Checking Bhagy Main EC12345 1500\n";
 		return help;
@@ -124,35 +124,48 @@ public class NewBank {
 
 		String [] arguments = request.split( "\\s+" );
 
-		if (arguments.length==6){
+		if (arguments.length==6 && arguments[5].matches("[0-9]+")){
 			String command = arguments[0];
-			String payeeAcc = arguments[1];
-			String person = arguments[2];
+			String payerAcc = arguments[1];
+			String receipient = arguments[2];
 			String receipientAcc = arguments[3];
 			String code = arguments[4];
 			String amount = arguments[5];
 			
 			double amountNumber = Double.parseDouble(amount);
-			Account payeeAccount = customers.get(customer.getKey()).getAccount(payeeAcc);
-			Account receipientAccount = customers.get(person).getAccount(receipientAcc);
-
-
-			if (customers.containsKey(person)){
-				if(amountNumber <= payeeAccount.getBalance()){
-					receipientAccount.addToBalance(amountNumber);
-					payeeAccount.deductFromBalance(amountNumber);
-					return amountNumber+ " have been transferred from "+ customer.getKey() + " to "+ person;
+			if (customers.get(receipient) != null ){
+				Account payerAccount = customers.get(customer.getKey()).getAccount(payerAcc);
+				Account receipientAccount = customers.get(receipient).getAccount(receipientAcc);
+				if (customers.containsKey(receipient)){
+					if (payerAccount!=null){
+						if(amountNumber <= payerAccount.getBalance()){
+							if(receipientAccount!= null){
+								receipientAccount.addToBalance(amountNumber);
+								payerAccount.deductFromBalance(amountNumber);
+								return amountNumber+ " have been transferred from "+ customer.getKey() + " to "+ receipient;
+							}
+							else {
+								return "Receipient's account doesn't exist, please retry.";
+							}
+						}
+						else{
+							return "Insufficient funds, Please retry.";
+						}
+					}
+					else{
+						return "Payer's account doesn't exist, please retry.";
+					}	
 				}
-				else{
-					return "insufficient funds, Please retry.";
+				else {
+					return "Bad request. The requested person is not a customer of NewBank.";
 				}
 			}
-			else {
+			else{
 				return "Bad request. The requested person is not a customer of NewBank.";
 			}
 		}
 		else {
-			return "Bad request. Please enter your command in the following format: PAY <Person/Company> <Account> <Sort Code> <Amount> ";
+			return "Bad request. Please enter your command in the following format: PAY <Payer_Account_name> <Person/Company> <Receipient_Account_name> <Sotrt_code> <Ammount> ";
 		}
 	}
 
