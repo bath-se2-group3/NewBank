@@ -79,11 +79,14 @@ public class NewBank {
 			}
 	}
 
+	private boolean isMailAddress(String mailAddress) {
+		return mailAddress.matches( ".*@.*\\.[a-zA-Z]{2,}");
+	}
+
 	private String addDetails(CustomerID customer, String request) {
 
 		String flag = null;
 		String mailAddress = null;
-		String parsedRequest = null;
 
 		String [] arguments = request.split( "\\s+" );
 
@@ -91,17 +94,17 @@ public class NewBank {
 			flag = arguments[0];
 			mailAddress = arguments[1];
 		} else {
-			return "Bad request";
+			return "Bad request. Please enter your command in the following format: ADDDETAILS <E-Mail Address>";
 		}
 
-		//TODO: Verify that mailAddress is actually a mail address
 
-		parsedRequest = mailAddress;
-
-		// Use setter to update customer mail address field
-		customers.get(customer.getKey()).setMail(parsedRequest);
-
-		return "Updated e-mail address to: " + (customers.get(customer.getKey())).getMail();
+		if (isMailAddress(mailAddress)) {
+			customers.get(customer.getKey()).setMail(mailAddress);
+			return "Updated e-mail address to: " + (customers.get(customer.getKey())).getMail();
+		} else {
+			return "An invalid e-mail address format was provided. Try again!";
+		}
+		
 	}
 
 	private String showMyAccounts(CustomerID customer) {
@@ -134,7 +137,7 @@ public class NewBank {
 		+ "\n"
 
 		+ "ADDDETAILS <Mail_address>\n"
-		+ "├ Add your mail address\n"
+		+ "├ Add your e-mail address\n"
 		+ "└ e.g. ADDDETAILS foo@bar.baz\n";
 	
 		return help;
