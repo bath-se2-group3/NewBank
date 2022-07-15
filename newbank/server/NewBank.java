@@ -152,7 +152,7 @@ public class NewBank {
 
 	private String showNewCustomerHelp() {
 		String help = "\nCREATECUSTOMER\n"
-				+ "â”œ Create a new customer account\n";
+				+ "└ Create a new customer account\n";
 		return help;
 	}
 
