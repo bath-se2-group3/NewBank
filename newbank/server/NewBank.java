@@ -55,6 +55,8 @@ public class NewBank {
 					return moveMoney(customer, request);
 				// case "createaccount":
 					// return createAccount(customer);
+				case "adddetails":
+					return addDetails(customer, request);
 				default:
 					return "FAIL";
 			}
@@ -71,6 +73,31 @@ public class NewBank {
 				default:
 					return "FAIL";
 			}
+	}
+
+	private String addDetails(CustomerID customer, String request) {
+
+		String flag = null;
+		String mailAddress = null;
+		String parsedRequest = null;
+
+		String [] arguments = request.split( "\\s+" );
+
+		if (arguments.length==2){
+			flag = arguments[0];
+			mailAddress = arguments[1];
+		} else {
+			return "Bad request";
+		}
+
+		//TODO: Verify that mailAddress is actually a mail address
+
+		parsedRequest = mailAddress;
+
+		// Use setter to update customer mail address field
+		customers.get(customer.getKey()).setMail(parsedRequest);
+
+		return "Updated e-mail address to: " + (customers.get(customer.getKey())).getMail();
 	}
 
 	private String showMyAccounts(CustomerID customer) {
@@ -98,7 +125,14 @@ public class NewBank {
 
 		+ "PAY <Person/Company> <Account_name> <Sort_code> <Amount>\n"
 		+ "├ Pay another user from your account to their account\n"
-		+ "└ e.g. PAY Bhagy Main EC12345 1500\n";
+		+ "└ e.g. PAY Bhagy Main EC12345 1500\n"
+		
+		+ "\n"
+
+		+ "ADDDETAILS <Mail_address>\n"
+		+ "├ Add your mail address\n"
+		+ "└ e.g. ADDDETAILS foo@bar.baz\n";
+	
 		return help;
 
 	}
