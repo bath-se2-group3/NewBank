@@ -5,7 +5,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class NewBankClientHandler extends Thread{
 
@@ -99,7 +103,8 @@ public class NewBankClientHandler extends Thread{
 
 	private Customer getCustomerDetails(String request) throws IOException {
 			out.println("Please submit customer details like so:");
-			out.println("CREATECUSTOMER <FirstName> <Surname> <Username>");
+			out.println("CREATECUSTOMER FirstName Surname Username\n");
+			out.println("Format for Username \n- 10 alphanumeric characters or less\n- No special characters\n");
 			while(true){
 				String[] response = in.readLine().split("\\s+");
 				if(response.length == 4 && response[0].toLowerCase(Locale.ROOT).equals("createcustomer")){
@@ -109,8 +114,8 @@ public class NewBankClientHandler extends Thread{
 						response[2].length() > 0 &&
 						response[3].length() > 0
 					){
-						if(bank.getCustomers().containsKey(response[3])){
-							out.printf("Sorry, that username already exists%n");
+						if(!isUsernameValid(response[3])){
+							out.printf("Sorry, that username is invalid please re-enter%n");
 						}else{
 							return new Customer.CustomerBuilder(response[1], response[2], response[3])
 									.build();
@@ -127,6 +132,21 @@ public class NewBankClientHandler extends Thread{
 
 			}
 
+	}
+
+	/**
+	 * Function to validate new customers usernames.
+	 * @param username entered through user input
+	 * @return Boolean representing validity of the username.
+	 */
+	private Boolean isUsernameValid(String username){
+		String regex = "^[a-zA-Z0-9]+$";
+		Pattern pattern = Pattern.compile(regex);
+		Matcher matcher = pattern.matcher(username);
+
+		if(username.length() <= 10 && !bank.getCustomers().containsKey(username) && matcher.matches()){
+			return true;
+		}return false;
 	}
 
 }
