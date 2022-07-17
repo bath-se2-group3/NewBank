@@ -8,6 +8,7 @@ public class Customer {
 	private final String firstName;
 	private final String lastName;
 	private String mail;
+	private Integer phoneNumber;
 	private ArrayList<Account> accounts;
 
 	public static class CustomerBuilder {
@@ -16,6 +17,7 @@ public class Customer {
 		private final String firstName;
 		private final String lastName;
 		private String mail;
+		private Integer phoneNumber;
 		private ArrayList<Account> accounts = new ArrayList<>();
 
 		public CustomerBuilder(String firstName, String lastName, String userName) {
@@ -23,6 +25,7 @@ public class Customer {
 			this.lastName = lastName;
 			this.userName = userName;
 			this.mail = "Mail address not set by user"; //TODO: Discuss: Do we think it's ok that a mail address is expected to be manually set by a user? that is, not set by the builder class
+			this.phoneNumber = null;
 		}
 
 		public CustomerBuilder addAccounts(Account account) {
@@ -42,6 +45,7 @@ public class Customer {
 		this.lastName = builder.lastName;
 		this.accounts = builder.accounts;
 		this.mail = builder.mail;
+		this.phoneNumber = builder.phoneNumber;
 	}
 
 	public String getUserName() {
@@ -60,10 +64,17 @@ public class Customer {
 		return mail;
 	}
 
+	public Integer getPhoneNumber() {
+		return phoneNumber;
+	}
+
 	public void setMail(String mailAddress) {
 		this.mail = mailAddress;
 	}
 
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = Integer.parseInt(phoneNumber);
+	}
 
 	public Account getAccount(String name){
 		for(Account a : accounts) {
