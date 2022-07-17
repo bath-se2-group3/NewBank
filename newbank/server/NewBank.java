@@ -15,7 +15,9 @@ public class NewBank {
 	}
 
 	private void addTestData() {
-		Customer bhagy = new Customer.CustomerBuilder("Sam", "Bhagy", "bhagy").addAccounts(new Account.AccountBuilder("Main", 0.00, 1000.00).build())
+		Customer bhagy = new Customer.CustomerBuilder("Sam", "Bhagy", "bhagy")
+				.addAccounts(new Account.AccountBuilder("Main", 0.00, 1000.00).build())
+				.addAccounts(new Account.AccountBuilder("Savings", 0.00, 1500.00).build())
 				.build();
 		customers.put("bhagy", bhagy);
 
@@ -178,9 +180,10 @@ public class NewBank {
 
 		if (arguments.length==4){
 			String command = arguments[0];
-			String accountFrom = arguments[1];
-			String accountTo= arguments[2];
-			String amount = arguments[3];
+			String amount = arguments[1];
+			String accountFrom = arguments[2];
+			String accountTo= arguments[3];
+
 			double amountNumber = Double.parseDouble(amount);
 
 
