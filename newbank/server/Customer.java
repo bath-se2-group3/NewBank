@@ -54,7 +54,7 @@ public class Customer {
 
 	public Account getAccount(String name){
 		for(Account a : accounts) {
-			if (name.equals(a.getAccountName())){
+			if (name.equals(a.getAccountName().toLowerCase())){
 				return a;
 			}
 		}
