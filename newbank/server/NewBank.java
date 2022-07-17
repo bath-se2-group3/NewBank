@@ -94,7 +94,7 @@ public class NewBank {
 
 		+ "\n"
 
-		+ "MOVE <Amount> <From> <To>\n"
+		+ "MOVE <Payer_Account_name> <Recipient_Account_name> <Amount>\n"
 		+ "├ Moves money between a user's existing accounts\n"
 		+ "└ e.g. MOVE Main Savings 100\n"
 
