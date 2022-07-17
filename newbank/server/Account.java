@@ -39,10 +39,6 @@ public class Account {
 		//
 	}
   
-  public double getBalance() {
-		return accountBalance;
-	}
-
 	public String getAccountName() {
 		return accountName;
 	}
@@ -50,7 +46,6 @@ public class Account {
 	public double getOpeningBalance() {
 		return openingBalance;
 	}
-
 
 	public double getAccountBalance() {
 		return accountBalance;
