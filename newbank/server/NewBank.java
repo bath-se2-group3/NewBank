@@ -1,6 +1,5 @@
 package newbank.server;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -79,26 +78,31 @@ public class NewBank {
 		return mailAddress.matches( ".*@.*\\.[a-zA-Z]{2,}");
 	}
 
+	private boolean isPhoneNumber(String phoneNumber) {
+		return phoneNumber.matches( ".*[0-9]");
+	}
+
 	private String addDetails(CustomerID customer, String request) {
 
 		String flag = null;
-		String mailAddress = null;
-
+		String argument = null;
 		String [] arguments = request.split( "\\s+" );
 
-		if (arguments.length==2){
+
+		if (arguments.length==2) {
 			flag = arguments[0];
-			mailAddress = arguments[1];
+			argument = arguments[1];
+			if (isMailAddress(argument)) {
+				customers.get(customer.getKey()).setMail(argument);
+				return "Updated e-mail address to: " + (customers.get(customer.getKey())).getMail();	
+			} else if (isPhoneNumber(argument)) {
+				customers.get(customer.getKey()).setPhoneNumber(argument);
+				return "Updated phone number to: " + (customers.get(customer.getKey())).getPhoneNumber();
+			} else {
+			return "Bad request. Please enter your command in the following format: ADDDETAILS <E-Mail Address | Phone Number>";
+			}
 		} else {
-			return "Bad request. Please enter your command in the following format: ADDDETAILS <E-Mail Address>";
-		}
-
-
-		if (isMailAddress(mailAddress)) {
-			customers.get(customer.getKey()).setMail(mailAddress);
-			return "Updated e-mail address to: " + (customers.get(customer.getKey())).getMail();
-		} else {
-			return "An invalid e-mail address format was provided. Try again!";
+			return "Bad request.";
 		}
 		
 	}
@@ -132,9 +136,11 @@ public class NewBank {
 		
 		+ "\n"
 
-		+ "ADDDETAILS <Mail_address>\n"
-		+ "├ Add your e-mail address\n"
-		+ "└ e.g. ADDDETAILS foo@bar.baz\n";
+		+ "ADDDETAILS <Mail_address | Phone_number>\n"
+		+ "├ Add your e-mail address or phone number\n"
+		+ "├ e.g. ADDDETAILS foo@bar.baz\n"
+		+ "├ or\n"
+		+ "└ e.g. ADDDETAILS 0123456789\n";
 	
 		return help;
 
