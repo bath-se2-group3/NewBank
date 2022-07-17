@@ -98,7 +98,7 @@ public class NewBank {
 
 		+ "PAY <Payer_Account_name> <Person/Company> <Receipient_Account_name> <Sotrt_code> <Ammount>\n"
 		+ "├ Pay another user from your account to their account\n"
-		+ "└ e.g. PAY Checking Bhagy Main EC12345 1500\";
+		+ "└ e.g. PAY Checking Bhagy Main EC12345 1500\n";
 		return help;
 
 	}
@@ -133,9 +133,9 @@ public class NewBank {
 			String receipientAcc = arguments[3];
 			String code = arguments[4];
 			String amount = arguments[5];
-			
+
 			double amountNumber = Double.parseDouble(amount);
-      
+
 			if (customers.get(receipient) != null ){
 				Account payerAccount = customers.get(customer.getKey()).getAccount(payerAcc);
 				Account receipientAccount = customers.get(receipient).getAccount(receipientAcc);
@@ -157,7 +157,7 @@ public class NewBank {
 					}
 					else{
 						return "Payer's account doesn't exist, please retry.";
-					}	
+					}
 				}
 				else {
 					return "Bad request. The requested person is not a customer of NewBank.";
