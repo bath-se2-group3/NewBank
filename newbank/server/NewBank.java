@@ -15,18 +15,16 @@ public class NewBank {
 	}
 
 	private void addTestData() {
-		Customer bhagy = new Customer.CustomerBuilder("Sam", "Bhagy", "bhagy")
-				.addAccounts(new Account("Main", 1000.0))
+		Customer bhagy = new Customer.CustomerBuilder("Sam", "Bhagy", "bhagy").addAccounts(new Account.AccountBuilder("Main", 0.00, 1000.00).build())
 				.build();
 		customers.put("bhagy", bhagy);
 
-		Customer christina = new Customer.CustomerBuilder("Christina", "Marks", "Christina")
-				.addAccounts(new Account("Savings", 1500.0))
+		Customer christina = new Customer.CustomerBuilder("Christina", "Marks", "Christina").addAccounts(new Account.AccountBuilder("Savings", 0.00, 1500.00).build())
 				.build();
 		customers.put("christina", christina);
 
-		Customer john = new Customer.CustomerBuilder("John", "Tees", "John")
-				.addAccounts(new Account("Checking", 250.00))
+		Customer john = new Customer.CustomerBuilder("John", "Tees", "John").addAccounts(new Account.AccountBuilder("Checking", 0.00, 250.00).build())
+																										  .addAccounts(new Account.AccountBuilder("Test", 0.00, 99.99).build())
 				.build();
 		customers.put("john", john);
 	}
@@ -53,6 +51,10 @@ public class NewBank {
 					return showHelp();
 				case  "pay":
 					return payMoney(customer, request);
+				case  "move":
+					return moveMoney(customer, request);
+				// case "createaccount":
+					// return createAccount(customer);
 				default:
 					return "FAIL";
 			}
@@ -77,26 +79,26 @@ public class NewBank {
 
 	private String showHelp() {
 		String help = "\nSHOWMYACCOUNTS\n"
-		+ "â”œ Returns a list of all the customers accounts along with their current balance\n"
-		+ "â”” e.g. Main: 1000.0\n"
+		+ "├  Returns a list of all the customers accounts along with their current balance\n"
+		+ "└ e.g. Main: 1000.0\n"
 
 		+ "\n"
 
 		+ "NEWACCOUNT <Name>\n"
-		+ "â”œ Creates a new account\n"
-		+ "â”” e.g. NEWACCOUNT Savings\n"
+		+ "├ Creates a new account\n"
+		+ "└ e.g. NEWACCOUNT Savings\n"
 
 		+ "\n"
 
 		+ "MOVE <Amount> <From> <To>\n"
-		+ "â”œ Moves money between a users existing accounts\n"
-		+ "â”” e.g. MOVE 100 Main Savings\n"
+		+ "├ Moves money between a user's existing accounts\n"
+		+ "└ e.g. MOVE 100 Main Savings\n"
 
 		+ "\n"
 
 		+ "PAY <Payer_Account_name> <Person/Company> <Receipient_Account_name> <Sotrt_code> <Ammount>\n"
-		+ "â”œ Pay another user from your account to their account\n"
-		+ "â”” e.g. PAY Checking Bhagy Main EC12345 1500\n";
+		+ "├ Pay another user from your account to their account\n"
+		+ "└ e.g. PAY Checking Bhagy Main EC12345 1500\";
 		return help;
 
 	}
@@ -133,6 +135,7 @@ public class NewBank {
 			String amount = arguments[5];
 			
 			double amountNumber = Double.parseDouble(amount);
+      
 			if (customers.get(receipient) != null ){
 				Account payerAccount = customers.get(customer.getKey()).getAccount(payerAcc);
 				Account receipientAccount = customers.get(receipient).getAccount(receipientAcc);
@@ -168,5 +171,35 @@ public class NewBank {
 			return "Bad request. Please enter your command in the following format: PAY <Payer_Account_name> <Person/Company> <Receipient_Account_name> <Sotrt_code> <Ammount> ";
 		}
 	}
+
+	private String moveMoney(CustomerID customer, String request) {
+
+		String [] arguments = request.split( "\\s+" );
+
+		if (arguments.length==4){
+			String command = arguments[0];
+			String accountFrom = arguments[1];
+			String accountTo= arguments[2];
+			String amount = arguments[3];
+			double amountNumber = Double.parseDouble(amount);
+
+
+				if(amountNumber <= 0){
+					return "Please enter a positive value.";
+				}
+				else if(amountNumber <= customers.get(customer.getKey()).getAccountByIndex(0).getAccountBalance()){
+					(customers.get(customer.getKey())).getAccountByIndex(1).addToBalance(amountNumber); //
+					(customers.get(customer.getKey())).getAccountByIndex(0).deductFromBalance(amountNumber);
+					return String.format("%.2f",amountNumber)+ " has been transferred from "+ accountFrom + " to "+ accountTo;
+				}
+				else{
+					return "There are insufficient funds in" + accountFrom + ". Please try again.";
+				}
+		}
+		else {
+			return "Bad request. Please enter your command in the following format: MOVE <Account From> <Account To> <Amount> ";
+		}
+	}
+
 
 }

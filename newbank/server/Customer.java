@@ -33,13 +33,11 @@ public class Customer {
 		}
 	}
 
-
 	private Customer(CustomerBuilder builder) {
 		this.userName = builder.userName;
 		this.firstName = builder.firstName;
 		this.lastName = builder.lastName;
 		this.accounts = builder.accounts;
-
 	}
 
 	public String getUserName() {
@@ -79,4 +77,5 @@ public class Customer {
 		}
 		return s;
 	}
+
 }
