@@ -35,16 +35,20 @@ public class NewBank {
 	 * Add test customers to the NewBank object.
 	 */
 	private void addTestData() {
-		Customer bhagy = new Customer.CustomerBuilder("Sam", "Bhagy", "bhagy").addAccounts(new Account.AccountBuilder("Main", 0.00, 1000.00).build())
+		Customer bhagy = new Customer.CustomerBuilder("Sam", "Bhagy", "bhagy")
+				.addAccounts(new Account.AccountBuilder("Main", 0.00, 1000.00).build())
+				.addAccounts(new Account.AccountBuilder("Savings", 0.00, 1500.00).build())
 				.build();
 		customers.put("bhagy", bhagy);
 
-		Customer christina = new Customer.CustomerBuilder("Christina", "Marks", "Christina").addAccounts(new Account.AccountBuilder("Savings", 0.00, 1500.00).build())
+		Customer christina = new Customer.CustomerBuilder("Christina", "Marks", "Christina")
+				.addAccounts(new Account.AccountBuilder("Savings", 0.00, 1500.00).build())
 				.build();
 		customers.put("christina", christina);
 
-		Customer john = new Customer.CustomerBuilder("John", "Tees", "John").addAccounts(new Account.AccountBuilder("Checking", 0.00, 250.00).build())
-																										  .addAccounts(new Account.AccountBuilder("Test", 0.00, 99.99).build())
+		Customer john = new Customer.CustomerBuilder("John", "Tees", "John")
+				.addAccounts(new Account.AccountBuilder("Checking", 0.00, 250.00).build())
+				.addAccounts(new Account.AccountBuilder("Test", 0.00, 99.99).build())
 				.build();
 		customers.put("john", john);
 	}
@@ -82,7 +86,7 @@ public class NewBank {
 	public synchronized String processRequest(CustomerID customer, String request) {
 		String command = request.split( "\\s+" )[0];
 		if (customers.containsKey(customer.getKey())) {
-			switch (command) {
+			switch (command.toLowerCase(Locale.ROOT)) {
 				case "showmyaccounts":
 					return showMyAccounts(customer);
 				case "help":
@@ -136,7 +140,7 @@ public class NewBank {
 	 */
 	private String showHelp() {
 		String help = "\nSHOWMYACCOUNTS\n"
-		+ "├ Returns a list of all the customers accounts along with their current balance\n"
+		+ "├  Returns a list of all the customers accounts along with their current balance\n"
 		+ "└ e.g. Main: 1000.0\n"
 
 		+ "\n"
@@ -147,15 +151,15 @@ public class NewBank {
 
 		+ "\n"
 
-		+ "MOVE <Account From> <Account To> <Amount>\n"
+		+ "MOVE <Payer_Account_name> <Recipient_Account_name> <Amount>\n"
 		+ "├ Moves money between a user's existing accounts\n"
-		+ "└ e.g. PAY Bhagy Main EC12345 1500\n"
+		+ "└ e.g. MOVE Main Savings 100\n"
 
 		+ "\n"
 
-		+ "PAY <Person/Company> <Account_name> <Sort_code> <Amount>\n"
+		+ "PAY <Payer_Account_name> <Person/Company> <Recipient_Account_name> <Sort_code> <Ammount>\n"
 		+ "├ Pay another user from your account to their account\n"
-		+ "└ e.g. PAY Bhagy Main EC12345 1500\n";
+		+ "└ e.g. PAY Checking Bhagy Main EC12345 1500\n";
 		return help;
 	}
 
@@ -181,7 +185,7 @@ public class NewBank {
 	 */
 	private String showNewCustomerHelp() {
 		String help = "\nCREATECUSTOMER\n"
-				+ "├ Create a new customer account\n";
+				+ "â”œ Create a new customer account\n";
 		return help;
 	}
 
@@ -206,30 +210,49 @@ public class NewBank {
 
 		String [] arguments = request.split( "\\s+" );
 
-		if (arguments.length==5){
+		if (arguments.length==6 && arguments[5].matches("[0-9]+")){
 			String command = arguments[0];
-			String person = arguments[1];
-			String account= arguments[2];
-			String code = arguments[3];
-			String amount = arguments[4];
+			String accFrom = arguments[1];
+			String recipient = arguments[2];
+			String accTo = arguments[3];
+			String code = arguments[4];
+			String amount = arguments[5];
+
 			double amountNumber = Double.parseDouble(amount);
 
-			if (customers.containsKey(person)){
-				if(amountNumber <= customers.get(customer.getKey()).getAccountByIndex(0).getAccountBalance()){
-					(customers.get(person)).getAccountByIndex(0).addToBalance(amountNumber); //
-					(customers.get(customer.getKey())).getAccountByIndex(0).deductFromBalance(amountNumber);
-					return amountNumber+ " have been transferred from "+ customer.getKey() + " to "+ person;
+			if (customers.get(recipient) != null ){
+				Account accountFrom = customers.get(customer.getKey()).getAccount(accFrom);
+				Account accountTo = customers.get(recipient).getAccount(accTo);
+				if (customers.containsKey(recipient)){
+					if (accountFrom!=null){
+						if(amountNumber <= accountFrom.getAccountBalance()){
+							if(accountTo!= null){
+								accountTo.addToBalance(amountNumber);
+								accountFrom.deductFromBalance(amountNumber);
+								return amountNumber+ " has been transferred from "+ customer.getKey() + " to "+ recipient;
+							}
+							else {
+								return "Recipient's account doesn't exist, please retry.";
+							}
+						}
+						else{
+							return "Insufficient funds, please retry.";
+						}
+					}
+					else{
+						return "Payer's account doesn't exist, please retry.";
+					}
 				}
-				else{
-					return "insufficient funds, Please retry.";
+				else {
+					return "Bad request. The requested person is not a customer of NewBank.";
 				}
 			}
-			else {
+			else{
 				return "Bad request. The requested person is not a customer of NewBank.";
 			}
 		}
 		else {
-			return "Bad request. Please enter your command in the following format: PAY <Person/Company> <Account> <Sort Code> <Amount> ";
+			return "Bad request. Please enter your command in the following format: PAY <Payer_Account_name> <Person/Company> <Recipient_Account_name> <Sort_code> <Amount> ";
 		}
 	}
 
@@ -245,27 +268,37 @@ public class NewBank {
 
 		String [] arguments = request.split( "\\s+" );
 
-		if (arguments.length==4){
+		if (arguments.length==4 && arguments[3].matches("[0-9]+")){
 			String command = arguments[0];
-			String accountFrom = arguments[1];
-			String accountTo= arguments[2];
+			String accFrom = arguments[1];
+			String accTo = arguments[2];
 			String amount = arguments[3];
+
 			double amountNumber = Double.parseDouble(amount);
 
-				if(amountNumber <= 0){
-					return "Please enter a positive value.";
-				}
-				else if(amountNumber <= customers.get(customer.getKey()).getAccountByIndex(0).getAccountBalance()){
-					(customers.get(customer.getKey())).getAccountByIndex(1).addToBalance(amountNumber); //
-					(customers.get(customer.getKey())).getAccountByIndex(0).deductFromBalance(amountNumber);
-					return String.format("%.2f",amountNumber)+ " has been transferred from "+ accountFrom + " to "+ accountTo;
-				}
-				else{
-					return "There are insufficient funds in" + accountFrom + ". Please try again.";
-				}
+				Account accountFrom = customers.get(customer.getKey()).getAccount(accFrom);
+				Account accountTo = customers.get(customer.getKey()).getAccount(accTo);
+					if (accountFrom!=null){
+						if(amountNumber <= accountFrom.getAccountBalance()){
+							if(accountTo!= null){
+								accountTo.addToBalance(amountNumber);
+								accountFrom.deductFromBalance(amountNumber);
+								return amountNumber+ " have been transferred from "+ accFrom + " to "+ accTo;
+							}
+							else {
+								return accTo + " doesn't exist, please retry.";
+							}
+						}
+						else{
+							return "There are insufficient funds in " + accFrom + ". Please retry.";
+						}
+					}
+					else{
+						return accFrom + " doesn't exist, please retry.";
+					}
 		}
 		else {
-			return "Bad request. Please enter your command in the following format: MOVE <Account From> <Account To> <Amount> ";
+			return "Bad request. Please enter your command in the following format: MOVE <Payer_Account_name> <Recipient_Account_name> <Amount> ";
 		}
 	}
 }

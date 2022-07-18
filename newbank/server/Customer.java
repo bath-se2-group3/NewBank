@@ -129,10 +129,9 @@ public class Customer {
 
 		// Loop through the customers accounts
 		for(Account a : accounts) {
-
 			// Check if the name of the account, is equal to the
 			// name that is being searched for
-			if (name.equals(a.getAccountName())){
+			if (name.equals(a.getAccountName().toLowerCase())){
 				return a;
 			}
 		}
