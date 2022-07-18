@@ -57,8 +57,8 @@ public class NewBank {
 					return payMoney(customer, request);
 				case  "move":
 					return moveMoney(customer, request);
-				// case "createaccount":
-					// return createAccount(customer);
+				case "createaccount":
+					return createAccount(customer, request);
 				default:
 					return "FAIL";
 			}
@@ -88,7 +88,7 @@ public class NewBank {
 
 		+ "\n"
 
-		+ "NEWACCOUNT <Name>\n"
+		+ "CREATEACCOUNT <Name>\n"
 		+ "├ Creates a new account\n"
 		+ "└ e.g. NEWACCOUNT Savings\n"
 
@@ -213,6 +213,43 @@ public class NewBank {
 			return "Bad request. Please enter your command in the following format: MOVE <Payer_Account_name> <Recipient_Account_name> <Amount> ";
 		}
 	}
+	
+	/**
+	 * Takes a request, and creates a new account for a 
+	 * specified customer.
+	 *
+	 * @param customer the customer creating the new account
+	 * @param request  the command and arguments passed in through the command line
+	 * @return         the status of the transfer as a string
+	 */
+	private String createAccount (CustomerID customer, String request) {
+		
+		// Split the String into arguments
+		String [] arguments = request.split( "\\s+" );
 
+		// Save the arguments as variables
+		String command = arguments[0];
+		String accountName = arguments[1];
+		String strBalance = arguments[2];
+
+		if (arguments.length != 3) {
+			return "Incorrect Number of Arguments! Please enter your command in the following format: CREATEACCOUNT <Account_Name> <Starting_Balance> ";
+		}
+
+		if (arguments[3].matches("[0-9]+")) {
+
+			// Convert the string balance to a double
+			double balance = Double.parseDouble(strBalance);
+
+			// Add the new account to the customer's list of accounts
+			boolean result = customer.createAccount(accountName, balance);
+
+			if (result) {
+				return "Success!";
+			} else {
+				return "Failure!";
+			}
+		}
+	}
 
 }
