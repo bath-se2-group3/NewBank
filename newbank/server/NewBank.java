@@ -62,10 +62,21 @@ public class NewBank {
 		return "FAIL";
 	}
 
+	private String updateUserName(Customer customer, String request) {
+		customers.put(customer.setUserName(), customer);
+		if(customers.containsKey(customer.setUserName())){
+			return "Username was updated to "+customer.setUserName();
+		}else{
+			return "Username was not updated";
+		}
+	}
+
 	public synchronized String processRequest(Customer customer, String request) {
 			switch (request.toLowerCase(Locale.ROOT)) {
 				case "createcustomer":
 					return createCustomer(customer);
+				case "changeusername":
+					return updateUserName(customer, request);
 				case "help":
 					return showNewCustomerHelp();
 				default:
@@ -89,6 +100,12 @@ public class NewBank {
 		+ "└ e.g. NEWACCOUNT Savings\n"
 
 		+ "\n"
+
+				+ "CHANGEUSERNAME <Username>\n"
+				+ "├ Changes the username\n"
+				+ "└ e.g. CHANGEUSERNAME Lola\n"
+
+				+ "\n"
 
 		+ "MOVE <Account From> <Account To> <Amount>\n"
 		+ "├ Moves money between a user's existing accounts\n"

@@ -52,6 +52,10 @@ public class Customer {
 		return lastName;
 	}
 
+	public String setUserName() {
+		return userName;
+	}
+
 	public Account getAccount(String name){
 		for(Account a : accounts) {
 			if (name.equals(a.getAccountName())){
