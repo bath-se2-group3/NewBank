@@ -64,14 +64,12 @@ public class Account {
 	/**
 	 * Constructor for an Account Object
 	 *
-	 * @param builder 
+	 * @param builder the account builder
 	 */
 	private Account(AccountBuilder builder) {
 		this.accountName = builder.accountName;
 		this.openingBalance = builder.openingBalance;
 		this.accountBalance = builder.accountBalance;
-		//
-		//
 	}
 
 	/**
