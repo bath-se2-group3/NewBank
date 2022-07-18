@@ -76,6 +76,15 @@ public class Customer {
 		}
 	}
 
+	/**
+	 * Adds an account to the customers lists of accounts.
+	 *
+	 * @param account the account to add to the customers list of accounts
+	 */
+	public void addAccount (Account account) {
+		this.accounts.add(account);
+	}
+
 	public Account getAccount(String name){
 		for(Account a : accounts) {
 			if (name.equals(a.getAccountName().toLowerCase())){
