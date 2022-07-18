@@ -21,7 +21,8 @@ public class NewBankServer extends Thread{
 	/**
 	 * NewBankServer Constructor.
 	 *
-	 * @param port the port number
+	 * @param port         the port number
+	 * @throws IOException throws when there is an input or output error
 	 */
 	public NewBankServer(int port) throws IOException {
 		server = new ServerSocket(port);
@@ -55,7 +56,8 @@ public class NewBankServer extends Thread{
 	/**
 	 * Start the NewBank Server thread on a specified port number.
 	 *
-	 * @param args arguments array
+	 * @param args         arguments array
+	 * @throws IOException throws when there is an input or output error
 	 */
 	public static void main(String[] args) throws IOException {
 		new NewBankServer(14002).start();

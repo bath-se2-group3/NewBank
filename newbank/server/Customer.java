@@ -38,10 +38,24 @@ public class Customer {
 	 */
 	public static class CustomerBuilder {
 
-		// The private fields for the customer
+		/**
+		 * The username of the customer
+		 */
 		private final String userName;
+
+		/**
+		 * The first name of the customer
+		 */
 		private final String firstName;
+
+		/**
+		 * The last name of the customer
+		 */
 		private final String lastName;
+
+		/**
+		 * A list of accounts belonging to the user
+		 */
 		private ArrayList<Account> accounts = new ArrayList<>();
 
 		/**

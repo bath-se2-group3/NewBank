@@ -39,8 +39,10 @@ public class ExampleClient extends Thread{
 	/**
 	 * ExampleClient Constructor.
 	 *
-	 * @param ip   the ip
-	 * @param port the port number
+	 * @param ip                    the ip
+	 * @param port                  the port number
+	 * @throws UnknownHostException throws with a DNS resolution failure
+	 * @throws IOException          throws when there is an input or output error
 	 */
 	public ExampleClient(String ip, int port) throws UnknownHostException, IOException {
 		server = new Socket(ip,port);
@@ -84,7 +86,10 @@ public class ExampleClient extends Thread{
 	/**
 	 * Start the Example Client on a specified port number.
 	 *
-	 * @param args arguments array
+	 * @param args                  arguments array
+	 * @throws UnknownHostException throws with a DNS resolution failure
+	 * @throws IOException          throws with input or output error
+	 * @throws InterruptedException throws when a thread is interrupted
 	 */
 	public static void main(String[] args) throws UnknownHostException, IOException, InterruptedException {
 		new ExampleClient("localhost",14002).start();

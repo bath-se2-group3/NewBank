@@ -33,9 +33,19 @@ public class Account {
 	 */
 	public static class AccountBuilder {
 
-		// The private fields for the account
+		/**
+		 * The name of the account
+		 */
 		private String accountName;
+
+		/**
+		 * The opening balance of the account
+		 */
 		private double openingBalance;
+
+		/**
+		 * The current balance of the account
+		 */
 		private double accountBalance;
 
 		/**

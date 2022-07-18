@@ -35,6 +35,7 @@ public class NewBankClientHandler extends Thread{
 	 * NewBank Client Handler
 	 *
 	 * @param s the client server
+	 * @throws IOException throws when there is an input or output error
 	 */
 	public NewBankClientHandler(Socket s) throws IOException {
 		bank = NewBank.getBank();
@@ -78,6 +79,8 @@ public class NewBankClientHandler extends Thread{
 	/**
 	 * If the user is an existing customer, allow the customer to login
 	 * and carry out a range of bank commands.
+	 *
+	 * @throws IOException throws when there is an input or output error
 	 */
 	private void existingCustomer() throws IOException {
 		// ask for user name
@@ -109,6 +112,8 @@ public class NewBankClientHandler extends Thread{
 
 	/**
 	 * If the user is a new customer, create a new customer.
+	 *
+	 * @throws IOException throws when there is an input or output error
 	 */
 	private void newCustomer() throws IOException {
 		Customer customer = null;
@@ -131,8 +136,9 @@ public class NewBankClientHandler extends Thread{
 	/**
 	 * Create a new customer
 	 *
-	 * @param request the request from the customer
-	 * @return        the customer
+	 * @param request      the request from the customer
+	 * @return             the customer
+	 * @throws IOException throws when there is an input or output error
 	 */
 	private Customer getCustomerDetails(String request) throws IOException {
 			out.println("Please submit customer details like so:");
