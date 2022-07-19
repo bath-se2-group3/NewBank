@@ -58,8 +58,8 @@ public class NewBank {
 					return moveMoney(customer, request);
 				// case "createaccount":
 					// return createAccount(customer);
-				case "adddetails":
-					return addDetails(customer, request);
+				case "addmycontactdetails":
+					return addmycontactdetails(customer, request);
 				default:
 					return "FAIL";
 			}
@@ -86,7 +86,7 @@ public class NewBank {
 		return phoneNumber.matches( ".*[0-9]");
 	}
 
-	private String addDetails(CustomerID customer, String request) {
+	private String addmycontactdetails(CustomerID customer, String request) {
 
 		String flag = null;
 		String argument = null;
@@ -103,7 +103,7 @@ public class NewBank {
 				customers.get(customer.getKey()).setPhoneNumber(argument);
 				return "Updated phone number to: " + (customers.get(customer.getKey())).getPhoneNumber();
 			} else {
-			return "Bad request. Please enter your command in the following format: ADDDETAILS <E-Mail Address | Phone Number>";
+			return "Bad request. Please enter your command in the following format: ADDMYCONTACTDETAILS <E-Mail Address | Phone Number>";
 			}
 		} else {
 			return "Bad request.";
@@ -140,11 +140,11 @@ public class NewBank {
 		
 		+ "\n"
 
-		+ "ADDDETAILS <Mail_address | Phone_number>\n"
+		+ "ADDMYCONTACTDETAILS <Mail_address | Phone_number>\n"
 		+ "├ Add your e-mail address or phone number\n"
-		+ "├ e.g. ADDDETAILS foo@bar.baz\n"
+		+ "├ e.g. ADDMYCONTACTDETAILS foo@bar.baz\n"
 		+ "├ or\n"
-		+ "└ e.g. ADDDETAILS 0123456789\n";
+		+ "└ e.g. ADDMYCONTACTDETAILS 0123456789\n";
 	
 		return help;
 
