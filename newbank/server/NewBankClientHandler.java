@@ -114,11 +114,15 @@ public class NewBankClientHandler extends Thread{
 						response[2].length() > 0 &&
 						response[3].length() > 0
 					){
-						if(!isUsernameValid(response[3])){
-							out.printf("Sorry, that username is invalid please re-enter%n");
-						}else{
-							return new Customer.CustomerBuilder(response[1], response[2], response[3])
-									.build();
+						if(response[3].length() > 0){
+							if(!isUsernameValid(response[3]) && !isUsernameAlreadyPresent(response[3])){
+								out.printf("Sorry, that username is invalid please re-enter\n");
+							} else if (isUsernameValid(response[3]) && isUsernameAlreadyPresent(response[3])){
+								out.printf("Sorry this username is already in use\n");
+							}else{
+								return new Customer.CustomerBuilder(response[1], response[2], response[3])
+										.build();
+							}
 						}
 					}else{
 						out.printf("Sorry, we cannot accept that input%n");
@@ -144,9 +148,18 @@ public class NewBankClientHandler extends Thread{
 		Pattern pattern = Pattern.compile(regex);
 		Matcher matcher = pattern.matcher(username);
 
-		if(username.length() <= 10 && !bank.getCustomers().containsKey(username) && matcher.matches()){
+		if(username.length() <= 10 && matcher.matches()){
 			return true;
 		}return false;
+	}
+
+	/**
+	 * Function to check if a username is already present
+	 * @param username entered through user input
+	 * @return Boolean representing if a given username already exists.
+	 */
+	private Boolean isUsernameAlreadyPresent(String username){
+		return bank.getCustomers().containsKey(username) ? true : false;
 	}
 
 }
