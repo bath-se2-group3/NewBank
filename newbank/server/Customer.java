@@ -61,9 +61,6 @@ public class Customer {
 	 * @return            the status of the transfer as a string
 	 */
 	public String createAccount(String accountName, double balance) {
-
-		String strResult = "";
-
 		try {
 			// Create the new account
 			Account newAccount = new Account.AccountBuilder(accountName, balance, balance).build();
@@ -71,11 +68,12 @@ public class Customer {
 			// Add the account to the list of users accounts
 			this.addAccount(newAccount);
 
+			String strResult = "";
 			strResult += accountName;
 			strResult += " created, with a balance of ";
 			strResult += balance;
 			strResult += ".\n";
-			strResult += "You know have the following accounts: ";
+			strResult += "You now have the following accounts: ";
 			strResult += this.accountsToString();
 
 			return strResult;
