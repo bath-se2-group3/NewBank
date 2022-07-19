@@ -56,23 +56,32 @@ public class Customer {
 	 * Takes a request, and creates a new account for a 
 	 * specified customer.
 	 *
-	 * @param customer the customer creating the new account
-	 * @param request  the command and arguments passed in through the command line
-	 * @return         the status of the transfer as a string
+	 * @param accountName the name of the new account
+	 * @param balance     the starting balance of the new account
+	 * @return            the status of the transfer as a string
 	 */
-	public boolean createAccount(Customer customer, String accountName, double accountNumber) {
-		
+	public String createAccount(String accountName, double balance) {
+
+		String strResult = "";
+
 		try {
 			// Create the new account
-			Account newAccount = new Account.AccountBuilder(accountName, accountNumber, accountNumber).build();
+			Account newAccount = new Account.AccountBuilder(accountName, balance, balance).build();
 
 			// Add the account to the list of users accounts
 			this.addAccount(newAccount);
 
-			return true;
+			strResult += accountName;
+			strResult += " created, with a balance of ";
+			strResult += balance;
+			strResult += ".\n";
+			strResult += "You know have the following accounts: ";
+			strResult += this.accountsToString();
+
+			return strResult;
 
 		} catch (Exception e) {
-			return false;
+			return "Sorry, an error occurred! Please retry.";
 		}
 	}
 

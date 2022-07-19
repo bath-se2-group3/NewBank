@@ -88,9 +88,9 @@ public class NewBank {
 
 		+ "\n"
 
-		+ "CREATEACCOUNT <Name>\n"
+		+ "CREATEACCOUNT <Account_Name> <Starting_Balance>\n"
 		+ "├ Creates a new account\n"
-		+ "└ e.g. NEWACCOUNT Savings\n"
+		+ "└ e.g. CREATEACCOUNT Savings\n"
 
 		+ "\n"
 
@@ -215,20 +215,18 @@ public class NewBank {
 	}
 	
 	/**
-	 * Takes a request, and creates a new account for a 
-	 * specified customer.
+	 * Takes a request, and creates a new account for a specified customer.
 	 *
 	 * @param customer the customer creating the new account
 	 * @param request  the command and arguments passed in through the command line
 	 * @return         the status of the transfer as a string
 	 */
 	private String createAccount (CustomerID customer, String request) {
-		
+
 		// Split the String into arguments
 		String [] arguments = request.split( "\\s+" );
 
 		// Save the arguments as variables
-		String command = arguments[0];
 		String accountName = arguments[1];
 		String strBalance = arguments[2];
 
@@ -236,19 +234,18 @@ public class NewBank {
 			return "Incorrect Number of Arguments! Please enter your command in the following format: CREATEACCOUNT <Account_Name> <Starting_Balance> ";
 		}
 
-		if (arguments[3].matches("[0-9]+")) {
+		if (arguments[2].matches("[0-9]+")) {
 
 			// Convert the string balance to a double
 			double balance = Double.parseDouble(strBalance);
 
-			// Add the new account to the customer's list of accounts
-			boolean result = customer.createAccount(accountName, balance);
+			// Add the new account to the customer's list of
+			String result = customers.get(customer.getKey()).createAccount(accountName, balance);
 
-			if (result) {
-				return "Success!";
-			} else {
-				return "Failure!";
-			}
+			return result;
+
+		} else {
+			return "Invalid Amount! Please retry.";
 		}
 	}
 
