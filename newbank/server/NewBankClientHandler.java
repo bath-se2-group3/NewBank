@@ -108,19 +108,21 @@ public class NewBankClientHandler extends Thread{
 			while(true){
 				String[] response = in.readLine().split("\\s+");
 				if(response.length == 4 && response[0].toLowerCase(Locale.ROOT).equals("createcustomer")){
+					String enteredFirstname = response[1];
+					String enteredSurname = response[2];
+					String enteredUsername = response[3];
 
-
-					if( response[1].length() > 0 &&
-						response[2].length() > 0 &&
-						response[3].length() > 0
+					if( enteredFirstname.length() > 0 &&
+						enteredSurname.length() > 0 &&
+						enteredUsername.length() > 0
 					){
-						if(response[3].length() > 0){
-							if(!isUsernameValid(response[3]) && !isUsernameAlreadyPresent(response[3])){
+						if(enteredUsername.length() > 0){
+							if(!isUsernameValid(enteredUsername) && !isUsernameAlreadyPresent(enteredUsername)){
 								out.printf("Sorry, that username is invalid please re-enter\n");
-							} else if (isUsernameValid(response[3]) && isUsernameAlreadyPresent(response[3])){
+							} else if (isUsernameValid(response[3]) && isUsernameAlreadyPresent(enteredUsername)){
 								out.printf("Sorry this username is already in use\n");
 							}else{
-								return new Customer.CustomerBuilder(response[1], response[2], response[3])
+								return new Customer.CustomerBuilder(enteredFirstname, enteredSurname, enteredUsername)
 										.build();
 							}
 						}
