@@ -26,7 +26,17 @@ public class Customer {
 	 */
 	private final String lastName;
 
-	/**
+  /**
+   * The mail of the customer
+   */
+	private String mail;
+  
+  /**
+   * The phone number of the customer
+   */
+	private Integer phoneNumber;
+
+  /**
 	 * A list of accounts belonging to the user
 	 */
 	private ArrayList<Account> accounts;
@@ -53,9 +63,19 @@ public class Customer {
 		 */
 		private final String lastName;
 
-		/**
-		 * A list of accounts belonging to the user
-		 */
+    /**
+     * The mail of the customer
+     */
+	  private String mail;
+  
+    /**
+     * The phone number of the customer
+     */
+	  private Integer phoneNumber;
+
+    /**
+	   * A list of accounts belonging to the user
+	   */
 		private ArrayList<Account> accounts = new ArrayList<>();
 
 		/**
@@ -69,6 +89,8 @@ public class Customer {
 			this.firstName = firstName;
 			this.lastName = lastName;
 			this.userName = userName;
+			this.mail = "Mail address not set by user"; //TODO: Discuss: Do we think it's ok that a mail address is expected to be manually set by a user? that is, not set by the builder class
+			this.phoneNumber = null;
 		}
 
 		/**
@@ -104,6 +126,8 @@ public class Customer {
 		this.firstName = builder.firstName;
 		this.lastName = builder.lastName;
 		this.accounts = builder.accounts;
+		this.mail = builder.mail;
+		this.phoneNumber = builder.phoneNumber;
 	}
 
 	/**
@@ -133,15 +157,50 @@ public class Customer {
 		return lastName;
 	}
 
-	/**
+  /**
+	 * Get and return the mail.
+	 * 
+	 * @return the mail of the customer
+	 */
+	public String getMail() {
+		return mail;
+	}
+
+  /**
+	 * Get and return the phone number
+	 * 
+	 * @return the phone number of the customer
+	 */
+	public Integer getPhoneNumber() {
+		return phoneNumber;
+	}
+
+  /**
+	 * Set the mail address
+	 * 
+	 * @param mailAddress the mail address of the customer
+	 */
+	public void setMail(String mailAddress) {
+		this.mail = mailAddress;
+	}
+
+  /**
+	 * Set the phone number
+	 * 
+	 * @param phoneNumber the phone number of the customer
+	 */
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = Integer.parseInt(phoneNumber);
+	}
+  
+  /**
 	 * Return the account with a given name
 	 * 
 	 * @param name the name of the account to return
 	 * @return     the account
 	 */
-	public Account getAccount(String name) {
-
-		// Loop through the customers accounts
+	public Account getAccount(String name){
+    // Loop through the customers accounts
 		for(Account a : accounts) {
 			// Check if the name of the account, is equal to the
 			// name that is being searched for

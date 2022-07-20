@@ -97,6 +97,8 @@ public class NewBank {
 					return moveMoney(customer, request);
 				// case "createaccount":
 					// return createAccount(customer);
+				case "addmycontactdetails":
+					return addmycontactdetails(customer, request);
 				default:
 					return "FAIL";
 			}
@@ -122,8 +124,61 @@ public class NewBank {
 					return "FAIL";
 			}
 	}
+  
+  /**
+   * Check whether a provided mail address is in a
+   * valid form or not
+   * 
+   * @param mailAddress the provided mail address
+   * @return            whether it is a valid mail address or not
+   */
+	private boolean isMailAddress(String mailAddress) {
+		return mailAddress.matches( ".*@.*\\.[a-zA-Z]{2,}");
+	}
 
-	/**
+  /**
+   * Check whether a provided phone number is in a
+   * valid form or not
+   * 
+   * @param phoneNumber the provided phone number
+   * @return            whether it is a valid phone number or not
+   */
+	private boolean isPhoneNumber(String phoneNumber) {
+		return phoneNumber.matches( ".*[0-9]");
+	}
+
+  /**
+	 * Takes a request, and adds customer details to the customer.
+	 *
+	 * @param customer the customer the details are provided for
+	 * @param request  the command and arguments passed in through the command line
+	 * @return         the status of adding the customer details
+	 */
+	private String addmycontactdetails(CustomerID customer, String request) {
+
+		String flag = null;
+		String argument = null;
+		String [] arguments = request.split( "\\s+" );
+
+		if (arguments.length==2) {
+			flag = arguments[0];
+			argument = arguments[1];
+			if (isMailAddress(argument)) {
+				customers.get(customer.getKey()).setMail(argument);
+				return "Updated e-mail address to: " + (customers.get(customer.getKey())).getMail();	
+			} else if (isPhoneNumber(argument)) {
+				customers.get(customer.getKey()).setPhoneNumber(argument);
+				return "Updated phone number to: " + (customers.get(customer.getKey())).getPhoneNumber();
+			} else {
+			return "Bad request. Please enter your command in the following format: ADDMYCONTACTDETAILS <E-Mail Address | Phone Number>";
+			}
+		} else {
+			return "Bad request.";
+		}
+		
+	}
+  
+  /**
 	 * Show accounts belonging to a specfied customer.
 	 *
 	 * @param customer the customer
@@ -159,7 +214,16 @@ public class NewBank {
 
 		+ "PAY <Payer_Account_name> <Person/Company> <Recipient_Account_name> <Sort_code> <Ammount>\n"
 		+ "├ Pay another user from your account to their account\n"
-		+ "└ e.g. PAY Checking Bhagy Main EC12345 1500\n";
+		+ "└ e.g. PAY Checking Bhagy Main EC12345 1500\n"
+		
+		+ "\n"
+
+		+ "ADDMYCONTACTDETAILS <Mail_address | Phone_number>\n"
+		+ "├ Add your e-mail address or phone number\n"
+		+ "├ e.g. ADDMYCONTACTDETAILS foo@bar.baz\n"
+		+ "├ or\n"
+		+ "└ e.g. ADDMYCONTACTDETAILS 0123456789\n";
+	
 		return help;
 	}
 
@@ -185,7 +249,7 @@ public class NewBank {
 	 */
 	private String showNewCustomerHelp() {
 		String help = "\nCREATECUSTOMER\n"
-				+ "â”œ Create a new customer account\n";
+				+ "└ Create a new customer account\n";
 		return help;
 	}
 
