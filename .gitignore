@@ -10,6 +10,9 @@
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
+# Javadoc
+javadoc/
+
 # Package Files #
 *.jar
 *.war
@@ -25,6 +28,10 @@ hs_err_pid*
 # Eclipse stuff
 .classpath
 .project
+
+# IntelliJ
+out/
+NewBank.iml
 
 # Bash wrappers for building and booting
 bootup.sh
