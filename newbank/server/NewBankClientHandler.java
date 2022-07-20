@@ -1,5 +1,7 @@
+// Package
 package newbank.server;
 
+// Import Statements
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,21 +13,44 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/** 
+ * The NewBank Handler
+ *
+ * @author University of Bath | Group 3
+ */
 public class NewBankClientHandler extends Thread{
 
+	/**
+	 * New Bank Object
+	 */
 	private NewBank bank;
+
+	/**
+	 * Input
+	 */
 	private BufferedReader in;
+
+	/**
+	 * Output
+	 */
 	private PrintWriter out;
 
-
+	/**
+	 * NewBank Client Handler
+	 *
+	 * @param s the client server
+	 * @throws IOException throws when there is an input or output error
+	 */
 	public NewBankClientHandler(Socket s) throws IOException {
 		bank = NewBank.getBank();
 		in = new BufferedReader(new InputStreamReader(s.getInputStream()));
 		out = new PrintWriter(s.getOutputStream(), true);
 	}
 
+	/**
+	 * Keep getting requests from the client and processing them.
+	 */
 	public void run() {
-		// keep getting requests from the client and processing them
 		try {
 			while(true) {
 				out.println("Welcome to NewBank");
@@ -55,6 +80,12 @@ public class NewBankClientHandler extends Thread{
 		}
 	}
 
+	/**
+	 * If the user is an existing customer, allow the customer to login
+	 * and carry out a range of bank commands.
+	 *
+	 * @throws IOException throws when there is an input or output error
+	 */
 	private void existingCustomer() throws IOException {
 		// ask for user name
 		out.println("Enter Username");
@@ -83,6 +114,11 @@ public class NewBankClientHandler extends Thread{
 		}
 	}
 
+	/**
+	 * If the user is a new customer, create a new customer.
+	 *
+	 * @throws IOException throws when there is an input or output error
+	 */
 	private void newCustomer() throws IOException {
 		Customer customer = null;
 		out.println("We would like to set up your customer details.");
@@ -101,6 +137,13 @@ public class NewBankClientHandler extends Thread{
 
 	}
 
+	/**
+	 * Create a new customer
+	 *
+	 * @param request      the request from the customer
+	 * @return             the customer
+	 * @throws IOException throws when there is an input or output error
+	 */
 	private Customer getCustomerDetails(String request) throws IOException {
 			out.println("Please submit customer details like so:");
 			out.println("CREATECUSTOMER <FirstName> <Surname> <Username>git\n");
