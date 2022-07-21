@@ -156,7 +156,7 @@ public class Customer {
 	public String getLastName() {
 		return lastName;
 	}
-
+  
   /**
 	 * Get and return the mail.
 	 * 
@@ -191,6 +191,46 @@ public class Customer {
 	 */
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = Integer.parseInt(phoneNumber);
+	}
+  
+	/**
+	 * Takes a request, and creates a new account for a 
+	 * specified customer.
+	 *
+	 * @param accountName the name of the new account
+	 * @param balance     the starting balance of the new account
+	 * @return            the status of the transfer as a string
+	 */
+	public String createAccount(String accountName, double balance) {
+		try {
+			// Create the new account
+			Account newAccount = new Account.AccountBuilder(accountName, balance, balance).build();
+
+			// Add the account to the list of users accounts
+			this.addAccount(newAccount);
+
+			String strResult = "";
+			strResult += accountName;
+			strResult += " created, with a balance of ";
+			strResult += balance;
+			strResult += ".\n";
+			strResult += "You now have the following accounts: ";
+			strResult += this.accountsToString();
+
+			return strResult;
+
+		} catch (Exception e) {
+			return "Sorry, an error occurred! Please retry.";
+		}
+	}
+
+	/**
+	 * Adds an account to the customers lists of accounts.
+	 *
+	 * @param account the account to add to the customers list of accounts
+	 */
+	public void addAccount (Account account) {
+		this.accounts.add(account);
 	}
   
   /**
