@@ -1,19 +1,39 @@
+// Package
 package newbank.server;
 
+// Import Statements
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Locale;
 
+/** 
+ * Represents the New Bank bank
+ *
+ * @author University of Bath | Group 3
+ */
 public class NewBank {
 
+	/**
+	 * The bank object
+	 */
 	private static final NewBank bank = new NewBank();
+
+	/**
+	 * A list of customers belonging to the bank
+	 */
 	private HashMap<String, Customer> customers;
 
+	/**
+	 * Constructor for a NewBank Object
+	 */
 	private NewBank() {
 		customers = new HashMap<>();
 		addTestData();
 	}
 
+	/**
+	 * Add test customers to the NewBank object.
+	 */
 	private void addTestData() {
 		Customer bhagy = new Customer.CustomerBuilder("Sam", "Bhagy", "bhagy")
 				.addAccounts(new Account.AccountBuilder("Main", 0.00, 1000.00).build())
@@ -33,10 +53,22 @@ public class NewBank {
 		customers.put("john", john);
 	}
 
+	/**
+	 * Get the NewBank object.
+	 *
+	 * @return the NewBank Object
+	 */
 	public static NewBank getBank() {
 		return bank;
 	}
 
+	/**
+	 * Check if a login has been successful.
+	 *
+	 * @param userName the username of the customer
+	 * @param password the password of the customer
+	 * @return         the status of login
+	 */
 	public synchronized CustomerID checkLogInDetails(String userName, String password) {
 		if (customers.containsKey(userName)) {
 			return new CustomerID(userName);
@@ -44,7 +76,13 @@ public class NewBank {
 		return null;
 	}
 
-	// commands from the NewBank customer are processed in this method
+	/**
+	 * Process the requests for NewBank customers.
+	 *
+	 * @param customer the customer
+	 * @param request  the command and arguments passed in through the command line
+	 * @return         the status of processing a request
+	 */
 	public synchronized String processRequest(CustomerID customer, String request) {
 		String command = request.split( "\\s+" )[0];
 		if (customers.containsKey(customer.getKey())) {
@@ -59,13 +97,23 @@ public class NewBank {
 					return moveMoney(customer, request);
 				case "createaccount":
 					return createAccount(customer, request);
+				case "addmycontactdetails":
+					return addmycontactdetails(customer, request);
 				default:
 					return "FAIL";
 			}
 		}
+
 		return "FAIL";
 	}
 
+	/**
+	 * Process the requests for new customers.
+	 *
+	 * @param customer the customer
+	 * @param request  the command and arguments passed in through the command line
+	 * @return         the status of processing a request
+	 */
 	public synchronized String processRequest(Customer customer, String request) {
 			switch (request.toLowerCase(Locale.ROOT)) {
 				case "createcustomer":
@@ -76,11 +124,75 @@ public class NewBank {
 					return "FAIL";
 			}
 	}
+  
+  /**
+   * Check whether a provided mail address is in a
+   * valid form or not
+   * 
+   * @param mailAddress the provided mail address
+   * @return            whether it is a valid mail address or not
+   */
+	private boolean isMailAddress(String mailAddress) {
+		return mailAddress.matches( ".*@.*\\.[a-zA-Z]{2,}");
+	}
 
+  /**
+   * Check whether a provided phone number is in a
+   * valid form or not
+   * 
+   * @param phoneNumber the provided phone number
+   * @return            whether it is a valid phone number or not
+   */
+	private boolean isPhoneNumber(String phoneNumber) {
+		return phoneNumber.matches( ".*[0-9]");
+	}
+
+  /**
+	 * Takes a request, and adds customer details to the customer.
+	 *
+	 * @param customer the customer the details are provided for
+	 * @param request  the command and arguments passed in through the command line
+	 * @return         the status of adding the customer details
+	 */
+	private String addmycontactdetails(CustomerID customer, String request) {
+
+		String flag = null;
+		String argument = null;
+		String [] arguments = request.split( "\\s+" );
+
+		if (arguments.length==2) {
+			flag = arguments[0];
+			argument = arguments[1];
+			if (isMailAddress(argument)) {
+				customers.get(customer.getKey()).setMail(argument);
+				return "Updated e-mail address to: " + (customers.get(customer.getKey())).getMail();	
+			} else if (isPhoneNumber(argument)) {
+				customers.get(customer.getKey()).setPhoneNumber(argument);
+				return "Updated phone number to: " + (customers.get(customer.getKey())).getPhoneNumber();
+			} else {
+			return "Bad request. Please enter your command in the following format: ADDMYCONTACTDETAILS <E-Mail Address | Phone Number>";
+			}
+		} else {
+			return "Bad request.";
+		}
+		
+	}
+  
+  /**
+	 * Show accounts belonging to a specfied customer.
+	 *
+	 * @param customer the customer
+	 * @return         the accounts belonging to a customer as a string
+	 */
 	private String showMyAccounts(CustomerID customer) {
 		return (customers.get(customer.getKey())).accountsToString();
 	}
 
+	/**
+	 * Display help for customers.
+	 *
+	 * @return the help text as a string
+	 */
 	private String showHelp() {
 		String help = "\nSHOWMYACCOUNTS\n"
 		+ "├  Returns a list of all the customers accounts along with their current balance\n"
@@ -102,11 +214,25 @@ public class NewBank {
 
 		+ "PAY <Payer_Account_name> <Person/Company> <Recipient_Account_name> <Sort_code> <Ammount>\n"
 		+ "├ Pay another user from your account to their account\n"
-		+ "└ e.g. PAY Checking Bhagy Main EC12345 1500\n";
-		return help;
+		+ "└ e.g. PAY Checking Bhagy Main EC12345 1500\n"
+		
+		+ "\n"
 
+		+ "ADDMYCONTACTDETAILS <Mail_address | Phone_number>\n"
+		+ "├ Add your e-mail address or phone number\n"
+		+ "├ e.g. ADDMYCONTACTDETAILS foo@bar.baz\n"
+		+ "├ or\n"
+		+ "└ e.g. ADDMYCONTACTDETAILS 0123456789\n";
+	
+		return help;
 	}
 
+	/**
+	 * Creates a new customer.
+	 *
+	 * @param customer the new customer
+	 * @return         the status of the creation of a new customer as a string
+	 */
 	private String createCustomer(Customer customer){
 		customers.put(customer.getUserName(), customer);
 		if(customers.containsKey(customer.getUserName())){
@@ -116,16 +242,34 @@ public class NewBank {
 		}
 	}
 
+	/**
+	 * Display help for new customers.
+	 *
+	 * @return the help text as a string
+	 */
 	private String showNewCustomerHelp() {
 		String help = "\nCREATECUSTOMER\n"
-				+ "â”œ Create a new customer account\n";
+				+ "└ Create a new customer account\n";
 		return help;
 	}
 
+	/**
+	 * Return the customers of New Bank.
+	 *
+	 * @return a hash map of customers with new bank accounts
+	 */
 	public HashMap<String, Customer> getCustomers() {
 		return customers;
 	}
 
+	/**
+	 * Takes a request, and pays a specified amount of money to
+	 * another customer of new bank.
+	 *
+	 * @param customer the customer paying the money
+	 * @param request  the command and arguments passed in through the command line
+	 * @return         the status of the payment as a string
+	 */
 	private String payMoney(CustomerID customer, String request) {
 
 		String [] arguments = request.split( "\\s+" );
@@ -176,6 +320,14 @@ public class NewBank {
 		}
 	}
 
+	/**
+	 * Takes a request, and moves a specified amount of money from
+	 * one account to another account.
+	 *
+	 * @param customer the customer moving the money
+	 * @param request  the command and arguments passed in through the command line
+	 * @return         the status of the transfer as a string
+	 */
 	private String moveMoney(CustomerID customer, String request) {
 
 		String [] arguments = request.split( "\\s+" );
@@ -248,5 +400,4 @@ public class NewBank {
 			return "Invalid Amount! Please retry.";
 		}
 	}
-
 }
