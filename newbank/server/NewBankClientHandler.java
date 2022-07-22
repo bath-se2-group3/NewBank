@@ -83,13 +83,13 @@ public class NewBankClientHandler extends Thread{
 		Customer customer = null;
 		out.println("We would like to set up your customer details.");
 		while(true) {
-			out.println("What do you want to do?\n"
+			out.println("What would you like to do?\n"
 					+ "\n"
 					+ "Type HELP to list available commands"
 					+ "\n");
 				String request = in.readLine().toLowerCase(Locale.ROOT);
 				if(request.equals("createcustomer")) {
-					customer = getCustomerDetails(request);
+					customer = createCustomerRecord();
 				}
 				String response = bank.processRequest(customer, request);
 				out.println(response);
@@ -97,29 +97,35 @@ public class NewBankClientHandler extends Thread{
 
 	}
 
-	private Customer getCustomerDetails(String request) throws IOException {
+	private Customer createCustomerRecord() throws IOException {
 			out.println("Please submit customer details like so:");
-			out.println("CREATECUSTOMER <FirstName> <Surname> <Username>");
+			out.println("CREATECUSTOMER <FirstName> <Surname> <Username> <Password>");
+
 			while(true){
 				String[] response = in.readLine().split("\\s+");
-				if(response.length == 4 && response[0].toLowerCase(Locale.ROOT).equals("createcustomer")){
+				String command = response[0];
+				String firstName = response[1];
+				String surname = response[2];
+				String username = response[3];
+				String password = response[4];
 
-
-					if( response[1].length() > 0 &&
-						response[2].length() > 0 &&
-						response[3].length() > 0
+				if(response.length == 5 && command.toLowerCase(Locale.ROOT).equals("createcustomer")){
+					if( firstName.length() > 0 &&
+						surname.length() > 0 &&
+						username.length() > 0 &&
+						password.length() > 0
 					){
-						if(bank.getCustomers().containsKey(response[3])){
+						if(TestData.getCustomers().containsKey(username)){
 							out.printf("Sorry, that username already exists%n");
 						}else{
-							return new Customer.CustomerBuilder(response[1], response[2], response[3])
+							return new Customer.CustomerBuilder(firstName, surname, username, password)
 									.build();
 						}
 					}else{
 						out.printf("Sorry, we cannot accept that input%n");
 					}
 
-				}else if(response[0].toLowerCase(Locale.ROOT).equals("exit")){
+				}else if(command.toLowerCase(Locale.ROOT).equals("exit")){
 					return null;
 				}else{
 					out.printf("Sorry, we cannot accept that input%n");
