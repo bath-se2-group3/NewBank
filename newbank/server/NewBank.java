@@ -104,7 +104,17 @@ public class NewBank {
 
 	private String showNewCustomerHelp() {
 		String help = "\nCREATECUSTOMER\n"
-				+ "├ Create a new customer account\n";
+				+ "├ Create a new customer account\n"
+
+				+ "\n"
+
+				+ "RESTART\n"
+				+ "├ Return to beginning\n"
+
+				+ "\n"
+
+				+ "LogIn\n"
+				+ "├ Login as a customer\n";
 		return help;
 	}
 

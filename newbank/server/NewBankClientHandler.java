@@ -90,6 +90,8 @@ public class NewBankClientHandler extends Thread{
 				String request = in.readLine().toLowerCase(Locale.ROOT);
 				if(request.equals("createcustomer")) {
 					customer = createCustomerRecord();
+				}else if(request.equals("restart") || request.equals("login")){
+					run();
 				}
 				String response = bank.processRequest(customer, request);
 				out.println(response);
