@@ -15,7 +15,10 @@ public class NewBank {
 	}
 
 	private void addTestData() {
-		Customer bhagy = new Customer.CustomerBuilder("Sam", "Bhagy", "bhagy").addAccounts(new Account.AccountBuilder("Main", 0.00, 1000.00).build())
+		Customer bhagy = new Customer.CustomerBuilder("Sam", "Bhagy", "bhagy")
+				.addAccounts(
+						new Account.AccountBuilder("Main", 0.00, 1000.00).build()
+				)
 				.build();
 		customers.put("bhagy", bhagy);
 
@@ -53,6 +56,8 @@ public class NewBank {
 					return payMoney(customer, request);
 				case  "move":
 					return moveMoney(customer, request);
+				case "changeusername":
+					return updateUserName(customer, request);
 				// case "createaccount":
 					// return createAccount(customer);
 				default:
@@ -62,21 +67,10 @@ public class NewBank {
 		return "FAIL";
 	}
 
-	private String updateUserName(Customer customer, String request) {
-		customers.put(customer.setUserName(), customer);
-		if(customers.containsKey(customer.setUserName())){
-			return "Username was updated to "+customer.setUserName();
-		}else{
-			return "Username was not updated";
-		}
-	}
-
 	public synchronized String processRequest(Customer customer, String request) {
 			switch (request.toLowerCase(Locale.ROOT)) {
 				case "createcustomer":
 					return createCustomer(customer);
-				case "changeusername":
-					return updateUserName(customer, request);
 				case "help":
 					return showNewCustomerHelp();
 				default:
@@ -118,6 +112,19 @@ public class NewBank {
 		+ "└ e.g. PAY Bhagy Main EC12345 1500\n";
 		return help;
 
+	}
+
+	private String updateUserName(CustomerID customerId, String request) {
+		String key = customerId.getKey();
+		String [] arguments = request.split( "\\s+" );
+
+		String newUsername = arguments[1];
+		if(customers.containsKey(key)){
+			Customer customer = customers.get(key);
+			return "Username was updated to "+customer.setUserName(newUsername);
+		}else{
+			return "Customer could be located with key "+key +"; Username was not updated";
+		}
 	}
 
 	private String createCustomer(Customer customer){
