@@ -3,34 +3,14 @@ package newbank.server;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 public class NewBank {
 
 	private static final NewBank bank = new NewBank();
-	private HashMap<String, Customer> customers;
 
-	private NewBank() {
-		customers = new HashMap<>();
-		addTestData();
-	}
-
-	private void addTestData() {
-		Customer bhagy = new Customer.CustomerBuilder("Sam", "Bhagy", "bhagy")
-				.addAccounts(new Account.AccountBuilder("Main", 0.00, 1000.00).build())
-				.addAccounts(new Account.AccountBuilder("Savings", 0.00, 1500.00).build())
-				.build();
-		customers.put("bhagy", bhagy);
-
-		Customer christina = new Customer.CustomerBuilder("Christina", "Marks", "Christina")
-				.addAccounts(new Account.AccountBuilder("Savings", 0.00, 1500.00).build())
-				.build();
-		customers.put("christina", christina);
-
-		Customer john = new Customer.CustomerBuilder("John", "Tees", "John")
-				.addAccounts(new Account.AccountBuilder("Checking", 0.00, 250.00).build())
-				.addAccounts(new Account.AccountBuilder("Test", 0.00, 99.99).build())
-				.build();
-		customers.put("john", john);
+	public NewBank() {
+		TestData.addTestData();
 	}
 
 	public static NewBank getBank() {
@@ -38,7 +18,9 @@ public class NewBank {
 	}
 
 	public synchronized CustomerID checkLogInDetails(String userName, String password) {
-		if (customers.containsKey(userName)) {
+		Password passwords = new Password();
+
+		if (TestData.getCustomers().containsKey(userName) && validatePassword(userName, password, passwords.getPasswords())) {
 			return new CustomerID(userName);
 		}
 		return null;
@@ -47,7 +29,7 @@ public class NewBank {
 	// commands from the NewBank customer are processed in this method
 	public synchronized String processRequest(CustomerID customer, String request) {
 		String command = request.split( "\\s+" )[0];
-		if (customers.containsKey(customer.getKey())) {
+		if (TestData.getCustomers().containsKey(customer.getKey())) {
 			switch (command.toLowerCase(Locale.ROOT)) {
 				case "showmyaccounts":
 					return showMyAccounts(customer);
@@ -66,7 +48,7 @@ public class NewBank {
 		return "FAIL";
 	}
 
-	public synchronized String processRequest(Customer customer, String request) {
+	public synchronized String processRequest(Customer customer, String request) throws IOException {
 			switch (request.toLowerCase(Locale.ROOT)) {
 				case "createcustomer":
 					return createCustomer(customer);
@@ -78,7 +60,7 @@ public class NewBank {
 	}
 
 	private String showMyAccounts(CustomerID customer) {
-		return (customers.get(customer.getKey())).accountsToString();
+		return TestData.getCustomers().get(customer.getKey()).accountsToString();
 	}
 
 	private String showHelp() {
@@ -107,9 +89,13 @@ public class NewBank {
 
 	}
 
-	private String createCustomer(Customer customer){
-		customers.put(customer.getUserName(), customer);
-		if(customers.containsKey(customer.getUserName())){
+	private String createCustomer(Customer customer) throws IOException {
+		if(TestData.addCustomers(customer)){
+			Password password = new Password();
+			password.setPassword(customer);
+		}
+
+		if(TestData.getCustomers().containsKey(customer.getUserName())){
 			return "A customer account was created for "+customer.getUserName();
 		}else{
 			return "No customer account was created";
@@ -118,12 +104,8 @@ public class NewBank {
 
 	private String showNewCustomerHelp() {
 		String help = "\nCREATECUSTOMER\n"
-				+ "â”œ Create a new customer account\n";
+				+ "├ Create a new customer account\n";
 		return help;
-	}
-
-	public HashMap<String, Customer> getCustomers() {
-		return customers;
 	}
 
 	private String payMoney(CustomerID customer, String request) {
@@ -139,6 +121,7 @@ public class NewBank {
 			String amount = arguments[5];
 
 			double amountNumber = Double.parseDouble(amount);
+			HashMap<String, Customer> customers = TestData.getCustomers();
 
 			if (customers.get(recipient) != null ){
 				Account accountFrom = customers.get(customer.getKey()).getAccount(accFrom);
@@ -187,6 +170,7 @@ public class NewBank {
 			String amount = arguments[3];
 
 			double amountNumber = Double.parseDouble(amount);
+			HashMap<String, Customer> customers = TestData.getCustomers();
 
 				Account accountFrom = customers.get(customer.getKey()).getAccount(accFrom);
 				Account accountTo = customers.get(customer.getKey()).getAccount(accTo);
@@ -214,5 +198,11 @@ public class NewBank {
 		}
 	}
 
+	private boolean validatePassword(String username, String password, Map<String, String> passwords){
+		if(passwords.get(username).equals(password)){
+			return true;
+		}
+		return false;
+	}
 
 }
