@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Customer {
 
-	private final String userName;
+	private String userName;
 	private final String firstName;
 	private final String lastName;
 	private ArrayList<Account> accounts;
@@ -52,7 +52,8 @@ public class Customer {
 		return lastName;
 	}
 
-	public String setUserName() {
+	public String setUserName(String name) {
+		this.userName = name;
 		return userName;
 	}
 
