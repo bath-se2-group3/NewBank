@@ -90,28 +90,38 @@ public class NewBankClientHandler extends Thread{
 				String request = in.readLine().toLowerCase(Locale.ROOT);
 				if(request.equals("createcustomer")) {
 					customer = createCustomerRecord();
-				}else if(request.equals("restart") || request.equals("login")){
+				}else if(request.equals("exit") ||
+					     request.equals("restart") ||
+						 request.equals("login")){
+					      run();
+				}else{
 					run();
 				}
-				String response = bank.processRequest(customer, request);
-				out.println(response);
+
+				String response = null;
+				try{
+					response = bank.processRequest(customer, request);
+					out.println(response);
+				}catch(IllegalArgumentException illegalArgumentException){
+					out.println(illegalArgumentException.getMessage());
+				}
+
 			}
 
 	}
 
 	private Customer createCustomerRecord() throws IOException {
 			out.println("Please submit customer details like so:");
-			out.println("CREATECUSTOMER <FirstName> <Surname> <Username> <Password>");
+			out.println("<FirstName> <Surname> <Username> <Password>");
 
 			while(true){
 				String[] response = in.readLine().split("\\s+");
-				String command = response[0];
-				String firstName = response[1];
-				String surname = response[2];
-				String username = response[3];
-				String password = response[4];
+				String firstName = response[0];
+				String surname = response[1];
+				String username = response[2];
+				String password = response[3];
 
-				if(response.length == 5 && command.toLowerCase(Locale.ROOT).equals("createcustomer")){
+				if(response.length == 4){
 					if( firstName.length() > 0 &&
 						surname.length() > 0 &&
 						username.length() > 0 &&
@@ -127,8 +137,6 @@ public class NewBankClientHandler extends Thread{
 						out.printf("Sorry, we cannot accept that input%n");
 					}
 
-				}else if(command.toLowerCase(Locale.ROOT).equals("exit")){
-					return null;
 				}else{
 					out.printf("Sorry, we cannot accept that input%n");
 				}

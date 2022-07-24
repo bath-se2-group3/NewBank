@@ -6,10 +6,10 @@ import java.util.*;
 
 public class Password {
     final String filePath
-            = "newbank/server/passwords.txt";
+            = "/newbank/server/passwords.txt";
     private Map<String, String> passwords;
 
-    public Password() {
+    public Password() throws IllegalArgumentException{
         passwords = textToMap();
 
         // iterate over HashMap entries
@@ -20,7 +20,7 @@ public class Password {
         }
     }
 
-    private Map<String, String> textToMap(){
+    private Map<String, String> textToMap() throws IllegalArgumentException{
 
         Map<String, String> map
                 = new HashMap<>();
@@ -65,15 +65,22 @@ public class Password {
         }
     }
 
-    private File getFile(String fileName){
-        ClassLoader classLoader = getClass().getClassLoader();
-        URL resource = classLoader.getResource(fileName);
-        System.out.println(resource.getPath());
+    private File getFile(String fileName) throws IOException {
+
+        File file;
+        String userDir = System.getProperty("user.dir");
+        file = new File(userDir);
+
+        System.out.println("canonical path" +file.getCanonicalPath() + fileName);
+        //file = new File(userDir+"/..");
+        System.out.println(file.getCanonicalPath());
+
+        File resource = new File(file.getCanonicalPath() + fileName);
 
         if (resource == null) {
-            throw new IllegalArgumentException("file is not found!");
+            throw new IllegalArgumentException("Database is not available!");
         } else {
-            return new File(resource.getFile());
+            return resource;
         }
     }
 
