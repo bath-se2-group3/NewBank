@@ -103,6 +103,10 @@ public class NewBankClientHandler extends Thread{
 			while(true) {
 				String request = in.readLine().toLowerCase(Locale.ROOT);
 				System.out.println("Request from " + customer.getKey());
+				if (request.equals("logout")) {
+					out.println("Logged out successfully!\n");
+					existingCustomer();
+				} 
 				String response = bank.processRequest(customer, request);
 				out.println(response);
 			}
