@@ -274,7 +274,7 @@ public class NewBank {
 
 		String [] arguments = request.split( "\\s+" );
 
-		if (arguments.length==6 && arguments[5].matches("[0-9]+")){
+		if (arguments.length==6 && arguments[5].matches("^[0-9]*(\\.[0-9]{1,2})?$")){
 			String command = arguments[0];
 			String accFrom = arguments[1];
 			String recipient = arguments[2];
@@ -316,7 +316,7 @@ public class NewBank {
 			}
 		}
 		else {
-			return "Bad request. Please enter your command in the following format: PAY <Payer_Account_name> <Person/Company> <Recipient_Account_name> <Sort_code> <Amount> ";
+			return "Bad request. Please enter your command in the following format: PAY <Payer_Account_name> <Person/Company> <Recipient_Account_name> <Sort_code> <Amount_to_two_decimal_places> ";
 		}
 	}
 
@@ -332,7 +332,7 @@ public class NewBank {
 
 		String [] arguments = request.split( "\\s+" );
 
-		if (arguments.length==4 && arguments[3].matches("[0-9]+")){
+		if (arguments.length==4 && arguments[3].matches("^[0-9]*(\\.[0-9]{1,2})?$")){
 			String command = arguments[0];
 			String accFrom = arguments[1];
 			String accTo = arguments[2];
@@ -362,7 +362,7 @@ public class NewBank {
 					}
 		}
 		else {
-			return "Bad request. Please enter your command in the following format: MOVE <Payer_Account_name> <Recipient_Account_name> <Amount> ";
+			return "Bad request. Please enter your command in the following format: MOVE <Payer_Account_name> <Recipient_Account_name> <Amount_to_two_decimal_places> ";
 		}
 	}
 	
