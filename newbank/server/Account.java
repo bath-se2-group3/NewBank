@@ -118,7 +118,8 @@ public class Account {
 	 * @return the account name and balance as a string
 	 */
 	public String toString() {
-		return (accountName + ": " + accountBalance);
+		String accountDetailsToString = (accountName + ": " + "£" + String.format("%.2f",accountBalance));
+		return accountDetailsToString;
 	}
 
 	/**

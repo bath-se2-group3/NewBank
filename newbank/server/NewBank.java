@@ -293,7 +293,7 @@ public class NewBank {
 							if(accountTo!= null){
 								accountTo.addToBalance(amountNumber);
 								accountFrom.deductFromBalance(amountNumber);
-								return amountNumber+ " has been transferred from "+ customer.getKey() + " to "+ recipient;
+								return ("£" + String.format("%.2f", amountNumber) + " has been transferred from "+ customer.getKey() + " to "+ recipient);
 							}
 							else {
 								return "Recipient's account doesn't exist, please retry.";
@@ -347,7 +347,7 @@ public class NewBank {
 							if(accountTo!= null){
 								accountTo.addToBalance(amountNumber);
 								accountFrom.deductFromBalance(amountNumber);
-								return amountNumber+ " have been transferred from "+ accFrom + " to "+ accTo;
+								return ("£" + String.format("%.2f", amountNumber) + " has been transferred from "+ accFrom + " to "+ accTo);
 							}
 							else {
 								return accTo + " doesn't exist, please retry.";
