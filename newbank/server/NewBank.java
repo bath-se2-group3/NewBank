@@ -386,7 +386,7 @@ public class NewBank {
 			return "Incorrect Number of Arguments! Please enter your command in the following format: CREATEACCOUNT <Account_Name> <Starting_Balance> ";
 		}
 
-		if (arguments[2].matches("[0-9]+")) {
+		if (arguments[2].matches("^[0-9]*(\\.[0-9]{1,2})?$")) {
 
 			// Convert the string balance to a double
 			double balance = Double.parseDouble(strBalance);
