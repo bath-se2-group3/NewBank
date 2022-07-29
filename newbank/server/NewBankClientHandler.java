@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -105,6 +103,10 @@ public class NewBankClientHandler extends Thread{
 			while(true) {
 				String request = in.readLine().toLowerCase(Locale.ROOT);
 				System.out.println("Request from " + customer.getKey());
+				if (request.equals("logout")) {
+					out.println("Logged out successfully!\n");
+					existingCustomer();
+				} 
 				String response = bank.processRequest(customer, request);
 				out.println(response);
 			}

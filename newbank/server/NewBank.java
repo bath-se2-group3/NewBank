@@ -218,6 +218,12 @@ public class NewBank {
 		
 		+ "\n"
 
+		+ "LOGOUT\n"
+		+ "├ Log out of your account\n"
+		+ "└ e.g. LOGOUT\n"
+
+		+ "\n"
+
 		+ "ADDMYCONTACTDETAILS <Mail_address | Phone_number>\n"
 		+ "├ Add your e-mail address or phone number\n"
 		+ "├ e.g. ADDMYCONTACTDETAILS foo@bar.baz\n"

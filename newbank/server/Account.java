@@ -118,7 +118,11 @@ public class Account {
 	 * @return the account name and balance as a string
 	 */
 	public String toString() {
+<<<<<<< HEAD
 		return (accountName.substring(0, 1).toUpperCase() + accountName.substring(1) + ": " + "£" + String.format("%.2f",accountBalance));
+=======
+		return (accountName.substring(0, 1).toUpperCase() + accountName.substring(1) + ": " + accountBalance);
+>>>>>>> e0ed194c6f3ba56ceaa37bea724893e92266e103
 	}
 
 	/**

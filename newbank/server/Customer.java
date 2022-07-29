@@ -276,9 +276,9 @@ public class Customer {
 	 * @return the list of accounts as a string
 	 */
 	public String accountsToString() {
-		String s = "";
+		String s = "\n";
 		for(Account a : accounts) {
-			s += a.toString();
+			s += a.toString() + "\n";
 		}
 		return s;
 	}
