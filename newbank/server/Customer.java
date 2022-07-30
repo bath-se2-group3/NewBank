@@ -1,6 +1,7 @@
 // Package
 package newbank.server;
 
+import newbank.server.data.PasswordDAO;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -328,8 +329,8 @@ public class Customer {
 	}
 
 	public void setPassword(Customer customer) throws IOException {
-		Password passwords = new Password();
-		passwords.setPassword(customer);
+		PasswordDAO passwordDao = new PasswordDAO();
+		passwordDao.setPassword(customer);
 	}
 
 }

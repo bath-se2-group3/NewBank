@@ -2,6 +2,8 @@
 package newbank.server;
 
 // Import Statements
+import newbank.server.data.PasswordDAO;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Locale;
@@ -40,9 +42,9 @@ public class NewBank {
 	 * @return         the status of login
 	 */
 	public synchronized CustomerID checkLogInDetails(String userName, String password) {
-		Password passwords = new Password();
+		PasswordDAO passwordDao = new PasswordDAO();
 
-		if (getCustomers().containsKey(userName) && validatePassword(userName, password, passwords.getPasswords())) {
+		if (getCustomers().containsKey(userName) && validatePassword(userName, password, passwordDao.getPasswords())) {
 			return new CustomerID(userName);
 		}
 		return null;
@@ -240,8 +242,8 @@ public class NewBank {
 
 	private String createCustomer(Customer customer) throws IOException {
 		if(TestData.addCustomer(customer)){
-			Password password = new Password();
-			password.setPassword(customer);
+			PasswordDAO passwordDao = new PasswordDAO();
+			passwordDao.setPassword(customer);
 		}
 
 		if(getCustomers().containsKey(customer.getUserName())){

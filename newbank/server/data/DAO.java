@@ -1,10 +1,10 @@
-package newbank.server;
+package newbank.server.data;
 
-import java.io.*;
+    import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class DBO {
+public abstract class DAO {
 
     protected Map<String, String> textToMap(String filePath) throws IllegalArgumentException{
 
@@ -37,7 +37,7 @@ public abstract class DBO {
         return map;
     }
 
-    public void insertRecord(Customer customer, String filePath, String record) throws IOException {
+    public void insertRecord(String filePath, String record) throws IOException {
         try(BufferedWriter writer = new BufferedWriter(new FileWriter(getFile(filePath), true))){
             writer.write(record);
         }

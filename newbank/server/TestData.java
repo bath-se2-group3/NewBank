@@ -29,7 +29,7 @@ public final class TestData {
         return customers;
     }
 
-    public static boolean addCustomers(Customer customer){
+    public static boolean addCustomer(Customer customer){
         if(customers.putIfAbsent(customer.getUserName(), customer) == null ){
             return true;
         }
