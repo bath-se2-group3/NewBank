@@ -11,7 +11,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/** 
+/**
  * The NewBank Handler
  *
  * @author University of Bath | Group 3
@@ -106,7 +106,7 @@ public class NewBankClientHandler extends Thread{
 				if (request.equals("logout")) {
 					out.println("Logged out successfully!\n");
 					existingCustomer();
-				} 
+				}
 				String response = bank.processRequest(customer, request);
 				out.println(response);
 			}
@@ -125,16 +125,29 @@ public class NewBankClientHandler extends Thread{
 		Customer customer = null;
 		out.println("We would like to set up your customer details.");
 		while(true) {
-			out.println("What do you want to do?\n"
+			out.println("What would you like to do?\n"
 					+ "\n"
 					+ "Type HELP to list available commands"
 					+ "\n");
 				String request = in.readLine().toLowerCase(Locale.ROOT);
 				if(request.equals("createcustomer")) {
-					customer = getCustomerDetails(request);
+					customer = createCustomerRecord();
+				}else if(request.equals("exit") ||
+					     request.equals("restart") ||
+						 request.equals("login")){
+					      run();
+				}else{
+					run();
 				}
-				String response = bank.processRequest(customer, request);
-				out.println(response);
+
+				String response = null;
+				try{
+					response = bank.processRequest(customer, request);
+					out.println(response);
+				}catch(IllegalArgumentException illegalArgumentException){
+					out.println(illegalArgumentException.getMessage());
+				}
+
 			}
 
 	}
@@ -142,41 +155,36 @@ public class NewBankClientHandler extends Thread{
 	/**
 	 * Create a new customer
 	 *
-	 * @param request      the request from the customer
 	 * @return             the customer
 	 * @throws IOException throws when there is an input or output error
 	 */
-	private Customer getCustomerDetails(String request) throws IOException {
+	private Customer createCustomerRecord() throws IOException {
 			out.println("Please submit customer details like so:");
-			out.println("CREATECUSTOMER <FirstName> <Surname> <Username>git\n");
-			out.println("Format for Username \n- 10 alphanumeric characters or less\n- No special characters\n");
+			out.println("<FirstName> <Surname> <Username> <Password>");
+
 			while(true){
 				String[] response = in.readLine().split("\\s+");
-				if(response.length == 4 && response[0].toLowerCase(Locale.ROOT).equals("createcustomer")){
-					String enteredFirstname = response[1];
-					String enteredSurname = response[2];
-					String enteredUsername = response[3];
+				String firstName = response[0];
+				String surname = response[1];
+				String username = response[2];
+				String password = response[3];
 
-					if( enteredFirstname.length() > 0 &&
-						enteredSurname.length() > 0 &&
-						enteredUsername.length() > 0
+				if(response.length == 4){
+					if( firstName.length() > 0 &&
+						surname.length() > 0 &&
+						username.length() > 0 &&
+						password.length() > 0
 					){
-						if(enteredUsername.length() > 0){
-							if(!isUsernameValid(enteredUsername) && !isUsernameAlreadyPresent(enteredUsername)){
-								out.printf("Sorry, that username is invalid please re-enter\n");
-							} else if (isUsernameValid(response[3]) && isUsernameAlreadyPresent(enteredUsername)){
-								out.printf("Sorry this username is already in use\n");
-							}else{
-								return new Customer.CustomerBuilder(enteredFirstname, enteredSurname, enteredUsername)
-										.build();
-							}
+						if(TestData.getCustomers().containsKey(username)){
+							out.printf("Sorry, that username already exists%n");
+						}else{
+							return new Customer.CustomerBuilder(firstName, surname, username, password)
+									.build();
 						}
 					}else{
 						out.printf("Sorry, we cannot accept that input%n");
 					}
 
-				}else if(response[0].toLowerCase(Locale.ROOT).equals("exit")){
-					return null;
 				}else{
 					out.printf("Sorry, we cannot accept that input%n");
 				}
