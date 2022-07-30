@@ -95,6 +95,8 @@ public class NewBank {
 					return payMoney(customer, request);
 				case  "move":
 					return moveMoney(customer, request);
+				case "changeusername":
+					return updateUserName(customer, request);
 				case "createaccount":
 					return createAccount(customer, request);
 				case "addmycontactdetails":
@@ -206,6 +208,12 @@ public class NewBank {
 
 		+ "\n"
 
+		+ "CHANGEUSERNAME <Username>\n"
+		+ "├ Changes the username\n"
+		+ "└ e.g. CHANGEUSERNAME Lola\n"
+
+		+ "\n"
+
 		+ "MOVE <Payer_Account_name> <Recipient_Account_name> <Amount>\n"
 		+ "├ Moves money between a user's existing accounts\n"
 		+ "└ e.g. MOVE Main Savings 100\n"
@@ -233,12 +241,27 @@ public class NewBank {
 		return help;
 	}
 
+
+	private String updateUserName(CustomerID customerId, String request) {
+		String key = customerId.getKey();
+		String [] arguments = request.split( "\\s+" );
+		String newUsername = arguments[1];
+		if (customers.containsKey(key)) {
+			Customer customer = customers.get(key);   
+			return "Username was updated to " + customer.setUserName(newUsername);
+		} else {  
+			return "Customer could be located with key " + key + "; Username was not updated";
+		}
+	}
+  
+  
 	/**
 	 * Creates a new customer.
 	 *
 	 * @param customer the new customer
 	 * @return         the status of the creation of a new customer as a string
 	 */
+
 	private String createCustomer(Customer customer){
 		customers.put(customer.getUserName(), customer);
 		if(customers.containsKey(customer.getUserName())){
