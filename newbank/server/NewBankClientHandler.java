@@ -151,7 +151,7 @@ public class NewBankClientHandler extends Thread{
 	 */
 	private Customer getCustomerDetails(String request) throws IOException {
 			out.println("Please submit customer details like so:");
-			out.println("CREATECUSTOMER <FirstName> <Surname> <Username>git\n");
+			out.println("CREATECUSTOMER <FirstName> <Surname> <Username>\n");
 			out.println("Format for Username \n- 10 alphanumeric characters or less\n- No special characters\n");
 			while(true){
 				String[] response = in.readLine().split("\\s+");
