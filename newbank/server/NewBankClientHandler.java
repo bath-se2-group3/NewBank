@@ -135,6 +135,9 @@ public class NewBankClientHandler extends Thread{
 				}
 				String response = bank.processRequest(customer, request);
 				out.println(response);
+
+				// Allow the new customer to login
+				existingCustomer();
 			}
 
 	}
