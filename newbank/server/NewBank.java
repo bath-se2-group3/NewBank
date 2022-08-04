@@ -276,7 +276,7 @@ public class NewBank {
 		return customers;
 	}
 
-	public static String capitalize(String str) {
+	public static String capitalizeFirstLetter(String str) {
 		if(str == null || str.isEmpty()) {
 			return str;
 		}
@@ -373,9 +373,9 @@ public class NewBank {
 								strResult += "£";
 								strResult += String.format("%.2f", amountNumber);
 								strResult += " has been transferred from ";
-								strResult += capitalize(accFrom);
+								strResult += capitalizeFirstLetter(accFrom);
 								strResult += " to ";
-								strResult += capitalize(accTo);
+								strResult += capitalizeFirstLetter(accTo);
 
 								return strResult;
 							}
@@ -384,11 +384,11 @@ public class NewBank {
 							}
 						}
 						else{
-							return "There are insufficient funds in " + capitalize(accFrom) + ". Please retry.";
+							return "There are insufficient funds in " + capitalizeFirstLetter(accFrom) + ". Please retry.";
 						}
 					}
 					else{
-						return capitalize(accFrom) + " doesn't exist, please retry.";
+						return capitalizeFirstLetter(accFrom) + " doesn't exist, please retry.";
 					}
 		}
 		else {
@@ -449,11 +449,11 @@ public class NewBank {
 					return result;
 				}
 				else{
-					return "There are funds remaining in " + capitalize(accountName) + ". You cannot close an account with funds remaining. Please retry.";
+					return "There are funds remaining in " + capitalizeFirstLetter(accountName) + ". You cannot close an account with funds remaining. Please retry.";
 				}
 			}
 			else{
-				return capitalize(accountName) + " doesn't exist, please retry.";
+				return capitalizeFirstLetter(accountName) + " doesn't exist, please retry.";
 			}
 		}
 		else {
