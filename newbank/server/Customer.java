@@ -11,14 +11,17 @@ import java.util.ArrayList;
  */
 public class Customer {
 
+	
 	/**
 	 * The username of the customer
 	 */
-	private final String userName;
+   
+	private String userName;
 
 	/**
 	 * The first name of the customer
 	 */
+	
 	private final String firstName;
 
 	/**
@@ -166,6 +169,14 @@ public class Customer {
 		return mail;
 	}
 
+	/**
+	 * Set the username
+	 */
+	public String setUserName(String name) {
+		this.userName = name;
+		return userName;
+	}
+
   /**
 	 * Get and return the phone number
 	 * 
@@ -229,7 +240,7 @@ public class Customer {
 			
 			
 
-			// Add the account to the list of users accounts
+			// Remove account
 			this.removeAccount(accountName);
 
 			String strResult = "";
