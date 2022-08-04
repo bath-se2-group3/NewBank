@@ -1,4 +1,7 @@
-package newbank.server;
+package newbank.server.data;
+
+import newbank.server.Account;
+import newbank.server.Customer;
 
 import java.util.HashMap;
 
