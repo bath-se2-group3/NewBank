@@ -261,7 +261,6 @@ public class NewBank {
 			return "Customer could be located with key " + key + "; Username was not updated";
 		}
 	}
-	
 
 	/**
 	 * Creates a new customer.
@@ -269,6 +268,7 @@ public class NewBank {
 	 * @param customer the new customer
 	 * @return         the status of the creation of a new customer as a string
 	 */
+
 	private String createCustomer(Customer customer){
 		customers.put(customer.getUserName(), customer);
 		if(customers.containsKey(customer.getUserName())){

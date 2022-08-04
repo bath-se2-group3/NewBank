@@ -11,7 +11,6 @@ import java.util.ArrayList;
  */
 public class Customer {
 
-	
 	/**
 	 * The username of the customer
 	 */
@@ -21,7 +20,7 @@ public class Customer {
 	/**
 	 * The first name of the customer
 	 */
-	
+
 	private final String firstName;
 
 	/**
@@ -169,7 +168,7 @@ public class Customer {
 		return mail;
 	}
 
-	/**
+  /**
 	 * Set the username
 	 */
 	public String setUserName(String name) {
@@ -275,6 +274,7 @@ public class Customer {
 	 * @param name the name of the account to return
 	 * @return     the account
 	 */
+
 	public Account getAccount(String name){
     // Loop through the customers accounts
 		for(Account a : accounts) {
