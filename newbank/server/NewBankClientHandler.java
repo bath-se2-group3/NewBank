@@ -137,60 +137,63 @@ public class NewBankClientHandler extends Thread{
 					+ "\n"
 					+ "Type HELP to list available commands"
 					+ "\n");
-				String request = in.readLine().toLowerCase(Locale.ROOT);
-				if(request.equals("createcustomer")) {
-					customer = getCustomerDetails(request);
-				}
-				String response = bank.processRequest(customer, request);
-				out.println(response);
+			String request = in.readLine().toLowerCase(Locale.ROOT);
+
+			if (request.equals("createcustomer")) {
+				customer = getCustomerDetails(request);
 			}
+
+			out.println(bank.processRequest(customer, request));
+
+			// Allow the new customer to login
+			existingCustomer();
+		}
 
 	}
 
 	/**
-	 * Create a new customer
+	 * Get customer details, and creates a new customer
 	 *
 	 * @param request      the request from the customer
 	 * @return             the customer
 	 * @throws IOException throws when there is an input or output error
 	 */
 	private Customer getCustomerDetails(String request) throws IOException {
-			out.println("Please submit customer details like so:");
-			out.println("CREATECUSTOMER <FirstName> <Surname> <Username>git\n");
-			out.println("Format for Username \n- 10 alphanumeric characters or less\n- No special characters\n");
-			while(true){
-				String[] response = in.readLine().split("\\s+");
-				if(response.length == 4 && response[0].toLowerCase(Locale.ROOT).equals("createcustomer")){
-					String enteredFirstname = response[1];
-					String enteredSurname = response[2];
-					String enteredUsername = response[3];
+		out.println("Please submit customer details like so:");
+		out.println("CREATECUSTOMER <FirstName> <Surname> <Username>\n");
+		out.println("Format for Username \n- 10 alphanumeric characters or less\n- No special characters\n");
 
-					if( enteredFirstname.length() > 0 &&
-						enteredSurname.length() > 0 &&
-						enteredUsername.length() > 0
-					){
-						if(enteredUsername.length() > 0){
-							if(!isUsernameValid(enteredUsername) && !isUsernameAlreadyPresent(enteredUsername)){
-								out.printf("Sorry, that username is invalid please re-enter\n");
-							} else if (isUsernameValid(response[3]) && isUsernameAlreadyPresent(enteredUsername)){
-								out.printf("Sorry this username is already in use\n");
-							}else{
-								return new Customer.CustomerBuilder(enteredFirstname, enteredSurname, enteredUsername)
-										.build();
-							}
+		while (true) {
+			String[] response = in.readLine().split("\\s+");
+
+			if (response.length == 4 && response[0].toLowerCase(Locale.ROOT).equals("createcustomer")) {
+				String enteredFirstname = response[1];
+				String enteredSurname = response[2];
+				String enteredUsername = response[3];
+
+				if (enteredFirstname.length() > 0 &&
+					enteredSurname.length() > 0 &&
+					enteredUsername.length() > 0
+				) {
+					if (enteredUsername.length() > 0) {
+						if (!isUsernameValid(enteredUsername) && !isUsernameAlreadyPresent(enteredUsername)) {
+							out.printf("Sorry, that username is invalid please re-enter\n");
+						} else if (isUsernameValid(response[3]) && isUsernameAlreadyPresent(enteredUsername)) {
+							out.printf("Sorry this username is already in use\n");
+						} else {
+							return new Customer.CustomerBuilder(enteredFirstname, enteredSurname, enteredUsername)
+									.build();
 						}
-					}else{
-						out.printf("Sorry, we cannot accept that input%n");
 					}
-
-				}else if(response[0].toLowerCase(Locale.ROOT).equals("exit")){
-					return null;
-				}else{
+				} else {
 					out.printf("Sorry, we cannot accept that input%n");
 				}
-
+			} else if (response[0].toLowerCase(Locale.ROOT).equals("exit")) {
+				return null;
+			} else {
+				out.printf("Sorry, we cannot accept that input%n");
 			}
-
+		}
 	}
 
 	/**
