@@ -147,10 +147,16 @@ public class NewBankClientHandler extends Thread{
 			out.println(response);
 		}
 
+			out.println(bank.processRequest(customer, request));
+
+			// Allow the new customer to login
+			existingCustomer();
+		}
+
 	}
 
 	/**
-	 * Create a new customer
+	 * Get customer details, and creates a new customer
 	 *
 	 * @param request      the request from the customer
 	 * @return             the customer
@@ -193,7 +199,6 @@ public class NewBankClientHandler extends Thread{
 			}
 
 		}
-
 	}
 
 	/**

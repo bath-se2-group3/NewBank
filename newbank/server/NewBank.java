@@ -74,6 +74,8 @@ public class NewBank {
 					return updateUserName(customer, request);
 				case "createaccount":
 					return createAccount(customer, request);
+				case "closeaccount":
+					return closeAccount(customer, request);
 				case "addmycontactdetails":
 					return addmycontactdetails(customer, request);
 				default:
@@ -185,6 +187,12 @@ public class NewBank {
 
 		+ "\n"
 
+		+ "CLOSEACCOUNT <Account_Name>\n"
+		+ "├ Closes an account\n"
+		+ "└ e.g. CLOSEACCOUNT Savings\n"
+
+		+ "\n"
+
 		+ "CHANGEUSERNAME <Username>\n"
 		+ "├ Changes the username\n"
 		+ "└ e.g. CHANGEUSERNAME Lola\n"
@@ -233,7 +241,6 @@ public class NewBank {
 		}
 	}
 
-
 	/**
 	 * Creates a new customer.
 	 *
@@ -281,6 +288,13 @@ public class NewBank {
 	 */
 	public HashMap<String, Customer> getCustomers() {
 		return TestData.getCustomers();
+	}
+
+	public static String capitalizeFirstLetter(String str) {
+		if(str == null || str.isEmpty()) {
+			return str;
+		}
+		return str.substring(0, 1).toUpperCase() + str.substring(1);
 	}
 
 	/**
@@ -370,18 +384,27 @@ public class NewBank {
 							if(accountTo!= null){
 								accountTo.addToBalance(amountNumber);
 								accountFrom.deductFromBalance(amountNumber);
-								return ("£" + String.format("%.2f", amountNumber) + " has been transferred from "+ accFrom + " to "+ accTo);
+
+								String strResult = "";
+								strResult += "£";
+								strResult += String.format("%.2f", amountNumber);
+								strResult += " has been transferred from ";
+								strResult += capitalizeFirstLetter(accFrom);
+								strResult += " to ";
+								strResult += capitalizeFirstLetter(accTo);
+
+								return strResult;
 							}
 							else {
 								return accTo + " doesn't exist, please retry.";
 							}
 						}
 						else{
-							return "There are insufficient funds in " + accFrom + ". Please retry.";
+							return "There are insufficient funds in " + capitalizeFirstLetter(accFrom) + ". Please retry.";
 						}
 					}
 					else{
-						return accFrom + " doesn't exist, please retry.";
+						return capitalizeFirstLetter(accFrom) + " doesn't exist, please retry.";
 					}
 		}
 		else {
@@ -401,15 +424,16 @@ public class NewBank {
 		// Split the String into arguments
 		String [] arguments = request.split( "\\s+" );
 
-		// Save the arguments as variables
-		String accountName = arguments[1];
-		String strBalance = arguments[2];
-
 		if (arguments.length != 3) {
 			return "Incorrect Number of Arguments! Please enter your command in the following format: CREATEACCOUNT <Account_Name> <Starting_Balance> ";
 		}
 
 		if (arguments[2].matches("^[0-9]*(\\.[0-9]{1,2})?$")) {
+			
+			// Save the arguments as variables
+			String command = arguments[0];
+			String accountName = arguments[1];
+			String strBalance = arguments[2];
 
 			// Convert the string balance to a double
 			double balance = Double.parseDouble(strBalance);
@@ -428,5 +452,35 @@ public class NewBank {
 			return true;
 		}
 		return false;
+	}
+}
+
+	private String closeAccount (CustomerID customer, String request) {
+
+		// Split the String into arguments
+		String [] arguments = request.split( "\\s+" );
+
+		if (arguments.length==2){
+			// Save the arguments as variables
+			String command = arguments[0];
+			String accountName = arguments[1];
+
+			Account accountToClose = customers.get(customer.getKey()).getAccount(accountName);
+			if (accountToClose!=null){
+				if(accountToClose.getAccountBalance() == 0) {
+					String result = customers.get(customer.getKey()).closeAccount(accountToClose);
+					return result;
+				}
+				else{
+					return "There are funds remaining in " + capitalizeFirstLetter(accountName) + ". You cannot close an account with funds remaining. Please retry.";
+				}
+			}
+			else{
+				return capitalizeFirstLetter(accountName) + " doesn't exist, please retry.";
+			}
+		}
+		else {
+			return "Bad request. Please enter your command in the following format: CLOSEACCOUNT <Account_Name> ";
+		}
 	}
 }

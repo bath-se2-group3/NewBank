@@ -12,7 +12,6 @@ import java.util.ArrayList;
  */
 public class Customer {
 
-
 	/**
 	 * The username of the customer
 	 */
@@ -197,7 +196,6 @@ public class Customer {
 		return mail;
 	}
 
-
   /**
 	 * Set the username
 	 */
@@ -264,6 +262,27 @@ public class Customer {
 		}
 	}
 
+	public String closeAccount(Account accountName) {
+		try {
+			
+			
+
+			// Remove account
+			this.removeAccount(accountName);
+
+			String strResult = "";
+			strResult += "Account deleted";
+			strResult += ".\n";
+			strResult += "You now have the following accounts: ";
+			strResult += this.accountsToString();
+
+			return strResult;
+
+		} catch (Exception e) {
+			return "Sorry, an error occurred! Please retry.";
+		}
+	}
+
 	/**
 	 * Adds an account to the customers lists of accounts.
 	 *
@@ -273,12 +292,15 @@ public class Customer {
 		this.accounts.add(account);
 	}
 
-
 	public String getPassword() {
 		return password;
 	}
 
-	/**
+	public void removeAccount (Account account) {
+		this.accounts.remove(account);
+	}
+  
+  /**
 	 * Return the account with a given name
 	 *
 	 * @param name the name of the account to return
