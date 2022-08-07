@@ -2,6 +2,8 @@
 package newbank.server;
 
 // Import Statements
+import newbank.server.data.TestData;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,7 +13,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/** 
+/**
  * The NewBank Handler
  *
  * @author University of Bath | Group 3
@@ -108,7 +110,7 @@ public class NewBankClientHandler extends Thread{
 					out.println("Logged out successfully!\n");
 					login = false;
 					existingCustomer();
-				} 
+				}
 				String response = bank.processRequest(customer, request);
 				out.println(response);
 				out.println("What do you want to do next?\n"
@@ -138,10 +140,12 @@ public class NewBankClientHandler extends Thread{
 					+ "Type HELP to list available commands"
 					+ "\n");
 			String request = in.readLine().toLowerCase(Locale.ROOT);
-
-			if (request.equals("createcustomer")) {
+			if(request.equals("createcustomer")) {
 				customer = getCustomerDetails(request);
 			}
+			String response = bank.processRequest(customer, request);
+			out.println(response);
+		}
 
 			out.println(bank.processRequest(customer, request));
 
@@ -160,39 +164,40 @@ public class NewBankClientHandler extends Thread{
 	 */
 	private Customer getCustomerDetails(String request) throws IOException {
 		out.println("Please submit customer details like so:");
-		out.println("CREATECUSTOMER <FirstName> <Surname> <Username>\n");
+		out.println("CREATECUSTOMER <FirstName> <Surname> <Username> <Password\n");
 		out.println("Format for Username \n- 10 alphanumeric characters or less\n- No special characters\n");
-
-		while (true) {
+		while(true){
 			String[] response = in.readLine().split("\\s+");
-
-			if (response.length == 4 && response[0].toLowerCase(Locale.ROOT).equals("createcustomer")) {
+			if(response.length == 5 && response[0].toLowerCase(Locale.ROOT).equals("createcustomer")){
 				String enteredFirstname = response[1];
 				String enteredSurname = response[2];
 				String enteredUsername = response[3];
+				String enteredPassword = response[4];
 
-				if (enteredFirstname.length() > 0 &&
-					enteredSurname.length() > 0 &&
-					enteredUsername.length() > 0
-				) {
-					if (enteredUsername.length() > 0) {
-						if (!isUsernameValid(enteredUsername) && !isUsernameAlreadyPresent(enteredUsername)) {
+				if( enteredFirstname.length() > 0 &&
+						enteredSurname.length() > 0 &&
+						enteredUsername.length() > 0
+				){
+					if(enteredUsername.length() > 0){
+						if(!isUsernameValid(enteredUsername) && !isUsernameAlreadyPresent(enteredUsername)){
 							out.printf("Sorry, that username is invalid please re-enter\n");
-						} else if (isUsernameValid(response[3]) && isUsernameAlreadyPresent(enteredUsername)) {
+						} else if (isUsernameValid(response[3]) && isUsernameAlreadyPresent(enteredUsername)){
 							out.printf("Sorry this username is already in use\n");
-						} else {
-							return new Customer.CustomerBuilder(enteredFirstname, enteredSurname, enteredUsername)
+						}else{
+							return new Customer.CustomerBuilder(enteredFirstname, enteredSurname, enteredUsername, enteredPassword)
 									.build();
 						}
 					}
-				} else {
+				}else{
 					out.printf("Sorry, we cannot accept that input%n");
 				}
-			} else if (response[0].toLowerCase(Locale.ROOT).equals("exit")) {
+
+			}else if(response[0].toLowerCase(Locale.ROOT).equals("exit")){
 				return null;
-			} else {
+			}else{
 				out.printf("Sorry, we cannot accept that input%n");
 			}
+
 		}
 	}
 
@@ -217,7 +222,7 @@ public class NewBankClientHandler extends Thread{
 	 * @return Boolean representing if a given username already exists.
 	 */
 	private Boolean isUsernameAlreadyPresent(String username){
-		return bank.getCustomers().containsKey(username) ? true : false;
+		return TestData.getCustomers().containsKey(username) ? true : false;
 	}
 
 }

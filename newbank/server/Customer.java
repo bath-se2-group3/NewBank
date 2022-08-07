@@ -1,10 +1,11 @@
 // Package
 package newbank.server;
 
-// Import Statements
+import newbank.server.data.PasswordDAO;
+import java.io.IOException;
 import java.util.ArrayList;
 
-/** 
+/**
  * Represents a Customer
  *
  * @author University of Bath | Group 3
@@ -14,7 +15,7 @@ public class Customer {
 	/**
 	 * The username of the customer
 	 */
-   
+
 	private String userName;
 
 	/**
@@ -32,7 +33,7 @@ public class Customer {
    * The mail of the customer
    */
 	private String mail;
-  
+
   /**
    * The phone number of the customer
    */
@@ -42,6 +43,11 @@ public class Customer {
 	 * A list of accounts belonging to the user
 	 */
 	private ArrayList<Account> accounts;
+
+	/**
+	 * The customer password
+	 */
+	private String password;
 
 	/**
 	 * Builds a Customer
@@ -65,19 +71,21 @@ public class Customer {
 		 */
 		private final String lastName;
 
-    /**
-     * The mail of the customer
-     */
-	  private String mail;
-  
-    /**
-     * The phone number of the customer
-     */
-	  private Integer phoneNumber;
+		/**
+		 * The mail of the customer
+		 */
+		  private String mail;
 
-    /**
-	   * A list of accounts belonging to the user
-	   */
+		/**
+		 * The phone number of the customer
+		 */
+	  	private Integer phoneNumber;
+
+		private String password = null;
+
+		/**
+		 * A list of accounts belonging to the user
+	    */
 		private ArrayList<Account> accounts = new ArrayList<>();
 
 		/**
@@ -95,6 +103,24 @@ public class Customer {
 			this.phoneNumber = null;
 		}
 
+
+		/**
+		 * Constructor to Build a Customer
+		 *
+		 * @param firstName the first name of the customer
+		 * @param lastName  the last name of the customer
+		 * @param password  the password of the customer
+		 */
+		public CustomerBuilder(String firstName, String lastName, String userName, String password) {
+			this.firstName = firstName;
+			this.lastName = lastName;
+			this.userName = userName;
+			this.password = password;
+			this.mail = "Mail address not set by user"; //TODO: Discuss: Do we think it's ok that a mail address is expected to be manually set by a user? that is, not set by the builder class
+			this.phoneNumber = null;
+
+		}
+
 		/**
 		 * Add an account to the list of customers accounts.
 		 *
@@ -103,6 +129,7 @@ public class Customer {
 		 * @param account the account to add to the list of customer accounts
 		 * @return        the customer builder
 		 */
+
 		public CustomerBuilder addAccounts(Account account) {
 			this.accounts.add(account);
 			return this;
@@ -127,6 +154,7 @@ public class Customer {
 		this.userName = builder.userName;
 		this.firstName = builder.firstName;
 		this.lastName = builder.lastName;
+		this.password = builder.password;
 		this.accounts = builder.accounts;
 		this.mail = builder.mail;
 		this.phoneNumber = builder.phoneNumber;
@@ -134,7 +162,7 @@ public class Customer {
 
 	/**
 	 * Get and return the username.
-	 * 
+	 *
 	 * @return the username of the customer
 	 */
 	public String getUserName() {
@@ -143,7 +171,7 @@ public class Customer {
 
 	/**
 	 * Get and return the first name.
-	 * 
+	 *
 	 * @return the first name of the customer
 	 */
 	public String getFirstName() {
@@ -152,16 +180,16 @@ public class Customer {
 
 	/**
 	 * Get and return the last name.
-	 * 
+	 *
 	 * @return the last name of the customer
 	 */
 	public String getLastName() {
 		return lastName;
 	}
-  
+
   /**
 	 * Get and return the mail.
-	 * 
+	 *
 	 * @return the mail of the customer
 	 */
 	public String getMail() {
@@ -178,7 +206,7 @@ public class Customer {
 
   /**
 	 * Get and return the phone number
-	 * 
+	 *
 	 * @return the phone number of the customer
 	 */
 	public Integer getPhoneNumber() {
@@ -187,7 +215,7 @@ public class Customer {
 
   /**
 	 * Set the mail address
-	 * 
+	 *
 	 * @param mailAddress the mail address of the customer
 	 */
 	public void setMail(String mailAddress) {
@@ -196,15 +224,15 @@ public class Customer {
 
   /**
 	 * Set the phone number
-	 * 
+	 *
 	 * @param phoneNumber the phone number of the customer
 	 */
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = Integer.parseInt(phoneNumber);
 	}
-  
+
 	/**
-	 * Takes a request, and creates a new account for a 
+	 * Takes a request, and creates a new account for a
 	 * specified customer.
 	 *
 	 * @param accountName the name of the new account
@@ -264,17 +292,20 @@ public class Customer {
 		this.accounts.add(account);
 	}
 
+	public String getPassword() {
+		return password;
+	}
+
 	public void removeAccount (Account account) {
 		this.accounts.remove(account);
 	}
   
   /**
 	 * Return the account with a given name
-	 * 
+	 *
 	 * @param name the name of the account to return
 	 * @return     the account
 	 */
-
 	public Account getAccount(String name){
     // Loop through the customers accounts
 		for(Account a : accounts) {
@@ -291,7 +322,7 @@ public class Customer {
 
 	/**
 	 * Return the account with a given index
-	 * 
+	 *
 	 * @param index the index of the account
 	 * @return      the account
 	 */
@@ -317,6 +348,11 @@ public class Customer {
 			s += a.toString() + "\n";
 		}
 		return s;
+	}
+
+	public void setPassword(Customer customer) throws IOException {
+		PasswordDAO passwordDao = new PasswordDAO();
+		passwordDao.setPassword(customer);
 	}
 
 }
