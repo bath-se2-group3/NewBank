@@ -453,7 +453,7 @@ public class NewBank {
 		}
 		return false;
 	}
-}
+
 
 	private String closeAccount (CustomerID customer, String request) {
 

@@ -153,7 +153,7 @@ public class NewBankClientHandler extends Thread{
 			existingCustomer();
 		}
 
-	}
+	
 
 	/**
 	 * Get customer details, and creates a new customer
