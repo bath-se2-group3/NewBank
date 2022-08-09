@@ -105,7 +105,12 @@ public class NewBankClientHandler extends Thread{
 					+ "\n");
 			while(login) {
 				String request = in.readLine().toLowerCase(Locale.ROOT);
-				System.out.println("Request from " + customer.getKey());
+				System.out.println(
+					"Request From Customer ID: " +
+					customer.getKey() +
+					", Username: " +
+					bank.getCustomers().get(customer.getKey()).getUserName()
+				);
 				if (request.equals("logout")) {
 					out.println("Logged out successfully!\n");
 					login = false;
