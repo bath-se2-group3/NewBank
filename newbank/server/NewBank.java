@@ -74,6 +74,8 @@ public class NewBank {
 					return updateUserName(customer, request);
 				case "createaccount":
 					return createAccount(customer, request);
+				case "closeaccount":
+					return closeAccount(customer, request);
 				case "addmycontactdetails":
 					return addmycontactdetails(customer, request);
 				default:
@@ -185,6 +187,12 @@ public class NewBank {
 
 		+ "\n"
 
+		+ "CLOSEACCOUNT <Account_Name>\n"
+		+ "├ Closes an account\n"
+		+ "└ e.g. CLOSEACCOUNT Savings\n"
+
+		+ "\n"
+
 		+ "CHANGEUSERNAME <Username>\n"
 		+ "├ Changes the username\n"
 		+ "└ e.g. CHANGEUSERNAME Lola\n"
@@ -281,6 +289,13 @@ public class NewBank {
 	 */
 	public HashMap<String, Customer> getCustomers() {
 		return TestData.getCustomers();
+	}
+
+	public static String capitalizeFirstLetter(String str) {
+		if(str == null || str.isEmpty()) {
+			return str;
+		}
+		return str.substring(0, 1).toUpperCase() + str.substring(1);
 	}
 
 	/**
@@ -420,6 +435,36 @@ public class NewBank {
 
 		} else {
 			return "Invalid Amount! Please retry.";
+		}
+	}
+
+	private String closeAccount (CustomerID customer, String request) {
+
+		// Split the String into arguments
+		String [] arguments = request.split( "\\s+" );
+
+		if (arguments.length==2){
+			// Save the arguments as variables
+			String command = arguments[0];
+			String accountName = arguments[1];
+			HashMap<String, Customer> customers = getCustomers();
+
+			Account accountToClose = customers.get(customer.getKey()).getAccount(accountName);
+			if (accountToClose!=null){
+				if(accountToClose.getAccountBalance() == 0) {
+					String result = customers.get(customer.getKey()).closeAccount(accountToClose);
+					return result;
+				}
+				else{
+					return "There are funds remaining in " + capitalizeFirstLetter(accountName) + ". You cannot close an account with funds remaining. Please retry.";
+				}
+			}
+			else{
+				return capitalizeFirstLetter(accountName) + " doesn't exist, please retry.";
+			}
+		}
+		else {
+			return "Bad request. Please enter your command in the following format: CLOSEACCOUNT <Account_Name> ";
 		}
 	}
 

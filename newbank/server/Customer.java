@@ -264,6 +264,27 @@ public class Customer {
 		}
 	}
 
+	public String closeAccount(Account accountName) {
+		try {
+			
+			
+
+			// Remove account
+			this.removeAccount(accountName);
+
+			String strResult = "";
+			strResult += "Account deleted";
+			strResult += ".\n";
+			strResult += "You now have the following accounts: ";
+			strResult += this.accountsToString();
+
+			return strResult;
+
+		} catch (Exception e) {
+			return "Sorry, an error occurred! Please retry.";
+		}
+	}
+
 	/**
 	 * Adds an account to the customers lists of accounts.
 	 *
@@ -271,6 +292,10 @@ public class Customer {
 	 */
 	public void addAccount (Account account) {
 		this.accounts.add(account);
+	}
+
+	public void removeAccount (Account account) {
+		this.accounts.remove(account);
 	}
 
 
