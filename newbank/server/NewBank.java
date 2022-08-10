@@ -2,11 +2,15 @@
 package newbank.server;
 
 // Import Statements
+import newbank.server.data.PasswordDAO;
+import newbank.server.data.TestData;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
-/** 
+/**
  * Represents the New Bank bank
  *
  * @author University of Bath | Group 3
@@ -18,39 +22,8 @@ public class NewBank {
 	 */
 	private static final NewBank bank = new NewBank();
 
-	/**
-	 * A list of customers belonging to the bank
-	 */
-	private HashMap<String, Customer> customers;
-
-	/**
-	 * Constructor for a NewBank Object
-	 */
-	private NewBank() {
-		customers = new HashMap<>();
-		addTestData();
-	}
-
-	/**
-	 * Add test customers to the NewBank object.
-	 */
-	private void addTestData() {
-		Customer bhagy = new Customer.CustomerBuilder("Sam", "Bhagy", "bhagy")
-				.addAccounts(new Account.AccountBuilder("Main", 0.00, 1000.00).build())
-				.addAccounts(new Account.AccountBuilder("Savings", 0.00, 1500.00).build())
-				.build();
-		customers.put("bhagy", bhagy);
-
-		Customer christina = new Customer.CustomerBuilder("Christina", "Marks", "Christina")
-				.addAccounts(new Account.AccountBuilder("Savings", 0.00, 1500.00).build())
-				.build();
-		customers.put("christina", christina);
-
-		Customer john = new Customer.CustomerBuilder("John", "Tees", "John")
-				.addAccounts(new Account.AccountBuilder("Checking", 0.00, 250.00).build())
-				.addAccounts(new Account.AccountBuilder("Test", 0.00, 99.99).build())
-				.build();
-		customers.put("john", john);
+	public NewBank() {
+		TestData.addTestData();
 	}
 
 	/**
@@ -70,7 +43,9 @@ public class NewBank {
 	 * @return         the status of login
 	 */
 	public synchronized CustomerID checkLogInDetails(String userName, String password) {
-		if (customers.containsKey(userName)) {
+		PasswordDAO passwordDao = new PasswordDAO();
+
+		if (getCustomers().containsKey(userName) && validatePassword(userName, password, passwordDao.getPasswords())) {
 			return new CustomerID(userName);
 		}
 		return null;
@@ -85,7 +60,7 @@ public class NewBank {
 	 */
 	public synchronized String processRequest(CustomerID customer, String request) {
 		String command = request.split( "\\s+" )[0];
-		if (customers.containsKey(customer.getKey())) {
+		if (getCustomers().containsKey(customer.getKey())) {
 			switch (command.toLowerCase(Locale.ROOT)) {
 				case "showmyaccounts":
 					return showMyAccounts(customer);
@@ -118,7 +93,7 @@ public class NewBank {
 	 * @param request  the command and arguments passed in through the command line
 	 * @return         the status of processing a request
 	 */
-	public synchronized String processRequest(Customer customer, String request) {
+	public synchronized String processRequest(Customer customer, String request) throws IOException  {
 			switch (request.toLowerCase(Locale.ROOT)) {
 				case "createcustomer":
 					return createCustomer(customer);
@@ -128,11 +103,11 @@ public class NewBank {
 					return "FAIL";
 			}
 	}
-  
+
   /**
    * Check whether a provided mail address is in a
    * valid form or not
-   * 
+   *
    * @param mailAddress the provided mail address
    * @return            whether it is a valid mail address or not
    */
@@ -143,7 +118,7 @@ public class NewBank {
   /**
    * Check whether a provided phone number is in a
    * valid form or not
-   * 
+   *
    * @param phoneNumber the provided phone number
    * @return            whether it is a valid phone number or not
    */
@@ -164,12 +139,14 @@ public class NewBank {
 		String argument = null;
 		String [] arguments = request.split( "\\s+" );
 
+		HashMap<String, Customer> customers = getCustomers();
+
 		if (arguments.length==2) {
 			flag = arguments[0];
 			argument = arguments[1];
 			if (isMailAddress(argument)) {
 				customers.get(customer.getKey()).setMail(argument);
-				return "Updated e-mail address to: " + (customers.get(customer.getKey())).getMail();	
+				return "Updated e-mail address to: " + (customers.get(customer.getKey())).getMail();
 			} else if (isPhoneNumber(argument)) {
 				customers.get(customer.getKey()).setPhoneNumber(argument);
 				return "Updated phone number to: " + (customers.get(customer.getKey())).getPhoneNumber();
@@ -179,9 +156,9 @@ public class NewBank {
 		} else {
 			return "Bad request.";
 		}
-		
+
 	}
-  
+
   /**
 	 * Show accounts belonging to a specfied customer.
 	 *
@@ -189,7 +166,7 @@ public class NewBank {
 	 * @return         the accounts belonging to a customer as a string
 	 */
 	private String showMyAccounts(CustomerID customer) {
-		return (customers.get(customer.getKey())).accountsToString();
+		return getCustomers().get(customer.getKey()).accountsToString();
 	}
 
 	/**
@@ -231,7 +208,7 @@ public class NewBank {
 		+ "PAY <Payer_Account_name> <Person/Company> <Recipient_Account_name> <Sort_code> <Ammount>\n"
 		+ "├ Pay another user from your account to their account\n"
 		+ "└ e.g. PAY Checking Bhagy Main EC12345 1500\n"
-		
+
 		+ "\n"
 
 		+ "LOGOUT\n"
@@ -245,7 +222,7 @@ public class NewBank {
 		+ "├ e.g. ADDMYCONTACTDETAILS foo@bar.baz\n"
 		+ "├ or\n"
 		+ "└ e.g. ADDMYCONTACTDETAILS 0123456789\n";
-	
+
 		return help;
 	}
 
@@ -254,13 +231,16 @@ public class NewBank {
 		String key = customerId.getKey();
 		String [] arguments = request.split( "\\s+" );
 		String newUsername = arguments[1];
+		HashMap<String, Customer> customers = getCustomers();
+
 		if (customers.containsKey(key)) {
-			Customer customer = customers.get(key);   
+			Customer customer = customers.get(key);
 			return "Username was updated to " + customer.setUserName(newUsername);
-		} else {  
+		} else {
 			return "Customer could be located with key " + key + "; Username was not updated";
 		}
 	}
+
 
 	/**
 	 * Creates a new customer.
@@ -269,9 +249,13 @@ public class NewBank {
 	 * @return         the status of the creation of a new customer as a string
 	 */
 
-	private String createCustomer(Customer customer){
-		customers.put(customer.getUserName(), customer);
-		if(customers.containsKey(customer.getUserName())){
+	private String createCustomer(Customer customer) throws IOException {
+		if(TestData.addCustomer(customer)){
+			PasswordDAO passwordDao = new PasswordDAO();
+			passwordDao.setPassword(customer);
+		}
+
+		if(getCustomers().containsKey(customer.getUserName())){
 			return "A customer account was created for "+customer.getUserName();
 		}else{
 			return "No customer account was created";
@@ -285,7 +269,16 @@ public class NewBank {
 	 */
 	private String showNewCustomerHelp() {
 		String help = "\nCREATECUSTOMER\n"
-				+ "└ Create a new customer account\n";
+				+ "└ Create a new customer account\n"
+				+ "\n"
+
+				+ "RESTART\n"
+				+ "├ Return to beginning\n"
+
+				+ "\n"
+
+				+ "LogIn\n"
+				+ "├ Login as a customer\n";
 		return help;
 	}
 
@@ -295,7 +288,7 @@ public class NewBank {
 	 * @return a hash map of customers with new bank accounts
 	 */
 	public HashMap<String, Customer> getCustomers() {
-		return customers;
+		return TestData.getCustomers();
 	}
 
 	public static String capitalizeFirstLetter(String str) {
@@ -326,6 +319,7 @@ public class NewBank {
 			String amount = arguments[5];
 
 			double amountNumber = Double.parseDouble(amount);
+			HashMap<String, Customer> customers = getCustomers();
 
 			if (customers.get(recipient) != null ){
 				Account accountFrom = customers.get(customer.getKey()).getAccount(accFrom);
@@ -382,6 +376,7 @@ public class NewBank {
 			String amount = arguments[3];
 
 			double amountNumber = Double.parseDouble(amount);
+			HashMap<String, Customer> customers = getCustomers();
 
 				Account accountFrom = customers.get(customer.getKey()).getAccount(accFrom);
 				Account accountTo = customers.get(customer.getKey()).getAccount(accTo);
@@ -390,34 +385,25 @@ public class NewBank {
 							if(accountTo!= null){
 								accountTo.addToBalance(amountNumber);
 								accountFrom.deductFromBalance(amountNumber);
-
-								String strResult = "";
-								strResult += "£";
-								strResult += String.format("%.2f", amountNumber);
-								strResult += " has been transferred from ";
-								strResult += capitalizeFirstLetter(accFrom);
-								strResult += " to ";
-								strResult += capitalizeFirstLetter(accTo);
-
-								return strResult;
+								return ("£" + String.format("%.2f", amountNumber) + " has been transferred from "+ accFrom + " to "+ accTo);
 							}
 							else {
 								return accTo + " doesn't exist, please retry.";
 							}
 						}
 						else{
-							return "There are insufficient funds in " + capitalizeFirstLetter(accFrom) + ". Please retry.";
+							return "There are insufficient funds in " + accFrom + ". Please retry.";
 						}
 					}
 					else{
-						return capitalizeFirstLetter(accFrom) + " doesn't exist, please retry.";
+						return accFrom + " doesn't exist, please retry.";
 					}
 		}
 		else {
 			return "Bad request. Please enter your command in the following format: MOVE <Payer_Account_name> <Recipient_Account_name> <Amount_to_two_decimal_places> ";
 		}
 	}
-	
+
 	/**
 	 * Takes a request, and creates a new account for a specified customer.
 	 *
@@ -430,24 +416,22 @@ public class NewBank {
 		// Split the String into arguments
 		String [] arguments = request.split( "\\s+" );
 
+		// Save the arguments as variables
+		String accountName = arguments[1];
+		String strBalance = arguments[2];
+
 		if (arguments.length != 3) {
 			return "Incorrect Number of Arguments! Please enter your command in the following format: CREATEACCOUNT <Account_Name> <Starting_Balance> ";
 		}
 
 		if (arguments[2].matches("^[0-9]*(\\.[0-9]{1,2})?$")) {
-			
-			// Save the arguments as variables
-			String command = arguments[0];
-			String accountName = arguments[1];
-			String strBalance = arguments[2];
 
 			// Convert the string balance to a double
 			double balance = Double.parseDouble(strBalance);
+			HashMap<String, Customer> customers = getCustomers();
 
 			// Add the new account to the customer's list of
-			String result = customers.get(customer.getKey()).createAccount(accountName, balance);
-
-			return result;
+			return customers.get(customer.getKey()).createAccount(accountName, balance);
 
 		} else {
 			return "Invalid Amount! Please retry.";
@@ -463,6 +447,7 @@ public class NewBank {
 			// Save the arguments as variables
 			String command = arguments[0];
 			String accountName = arguments[1];
+			HashMap<String, Customer> customers = getCustomers();
 
 			Account accountToClose = customers.get(customer.getKey()).getAccount(accountName);
 			if (accountToClose!=null){
@@ -481,5 +466,12 @@ public class NewBank {
 		else {
 			return "Bad request. Please enter your command in the following format: CLOSEACCOUNT <Account_Name> ";
 		}
+	}
+
+	private boolean validatePassword(String username, String password, Map<String, String> passwords){
+		if(passwords.get(username).equals(password)){
+			return true;
+		}
+		return false;
 	}
 }
